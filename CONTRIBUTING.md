@@ -31,6 +31,8 @@ GitHub ne permet pas de restreindre l'accès à un sous-dossier au sein d'un mê
 
 Une fois les noms/identifiants GitHub de l'équipe connus (cf. tableau "Équipe" du `Readme.md`), on pourra ajouter un fichier `CODEOWNERS` pour que GitHub demande automatiquement la review du bon responsable sur chaque PR.
 
+**Règle de review :** le·la responsable d'un dossier ne relit jamais sa propre PR. Comme l'équipe compte 3 personnes, quand l'auteur·e est justement responsable du domaine touché, la review revient à l'un·e des deux autres membres (peu importe lequel·le — pas de binôme fixe nécessaire à cette taille d'équipe).
+
 ## Workflow
 
 1. Créer la branche depuis `master` à jour : `git checkout master && git pull && git checkout -b model/ddpm-unet`.
