@@ -15,6 +15,22 @@ Une branche courte par tâche, préfixée par domaine :
 |`docker/`|Conteneurisation|`docker/compose-setup`|
 |`docs/`|Rapport, README, historique|`docs/rapport-methode`|
 
+## Responsabilités par dossier
+
+GitHub ne permet pas de restreindre l'accès à un sous-dossier au sein d'un même repo : chaque membre a accès en écriture à tout. Le tableau ci-dessous fixe donc un **responsable principal** par domaine — la personne prioritaire pour relire/merger les PR qui le touchent, pas une barrière technique. N'importe qui peut proposer une PR sur n'importe quel dossier.
+
+|Dossier|Responsable principal|Rôle|
+|---|---|---|
+|`data/`, `src/data/`, `notebooks/` (EDA)|Data / Experiment Engineer|Collecte, prétraitement, exploration des données|
+|`src/models/ddpm/`, `src/models/gan/`, `src/training/`, `experiments/`|Model / Research Engineer|Architectures, entraînement, résultats bruts|
+|`src/evaluation/`, `configs/`|Model / Research Engineer (avec Data Engineer)|Métriques, étude d'ablation, définition des expériences|
+|`app/`, `docker/`|Reporting / Backend Developer|API, interface de démo, conteneurisation|
+|`reports/`|Reporting / Backend Developer|Rédaction du rapport (contenu alimenté par toute l'équipe)|
+|`scripts/`, `src/utils/`, `tests/`|Transverse|Reproductibilité, code partagé — pas de propriétaire unique|
+|`project/`, `Readme.md`, `HISTORY.md`, `CONTRIBUTING.md`|Transverse|Documentation du projet, à jour par tous|
+
+Une fois les noms/identifiants GitHub de l'équipe connus (cf. tableau "Équipe" du `Readme.md`), on pourra ajouter un fichier `CODEOWNERS` pour que GitHub demande automatiquement la review du bon responsable sur chaque PR.
+
 ## Workflow
 
 1. Créer la branche depuis `master` à jour : `git checkout master && git pull && git checkout -b model/ddpm-unet`.
