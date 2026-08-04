@@ -23,12 +23,12 @@ Décompose chaque fonctionnalité de [`PLANNING.md`](PLANNING.md) en actions con
 - [x] Consigner les observations (biais, qualité) — base de la section "Données" du rapport
 
 ### Pipeline de chargement / prétraitement
-- [ ] Écrire le `Dataset`/`DataLoader` PyTorch (`src/data/`)
-- [ ] Normalisation adaptée à la diffusion (ex. pixels dans [-1, 1])
-- [ ] Resize/crop si nécessaire (ex. CIFAR-10 downscalé)
-- [ ] Split train / éval (pour calcul du FID), seed fixé
-- [ ] Config YAML du pipeline (`configs/data.yaml` : batch size, resize, normalisation)
-- [ ] Test unitaire : shape et plage de valeurs en sortie du DataLoader
+- [x] Écrire le `Dataset`/`DataLoader` PyTorch (`src/data/`)
+- [x] Normalisation adaptée à la diffusion (ex. pixels dans [-1, 1])
+- [x] Resize/crop si nécessaire (ex. CIFAR-10 downscalé)
+- [x] Split train / éval (pour calcul du FID), seed fixé
+- [x] Config YAML du pipeline (`configs/data.yaml` : batch size, resize, normalisation)
+- [x] Test unitaire : shape et plage de valeurs en sortie du DataLoader
 
 ### Scripts de reproductibilité
 - [ ] Script de téléchargement/préparation automatique du dataset (`scripts/`)

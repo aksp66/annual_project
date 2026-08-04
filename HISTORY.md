@@ -112,3 +112,20 @@ Travail réalisé sur la branche `aaksp` (non mergé sur `master`), checklist "E
 - **Observations consignées** (section "Données" du rapport) : dataset propre nativement (pas de nettoyage requis), pas de resize nécessaire (déjà 28×28), normalisation recommandée vers [-1, 1] pour la diffusion (`x_norm = (x/255 - 0.5) / 0.5`).
 - Checklist "EDA" de `TASKS.md` cochée.
 - **Prochaine étape :** pipeline de chargement/prétraitement (`src/data/`, `configs/data.yaml`) — `Dataset`/`DataLoader` PyTorch, normalisation, split train/éval, test unitaire de shape/plage de valeurs.
+
+---
+
+## 2026-08-04 — Pipeline de chargement / prétraitement
+
+Travail réalisé sur la branche `aaksp` (non mergé sur `master`), checklist "Pipeline de chargement / prétraitement" de `TASKS.md`.
+
+- Ajout de `configs/data.yaml` : dataset `fashion_mnist`, `image_size: 32` (pad 28→32 pour que le U-Net DDPM downsample par divisions entières par 2 : 32→16→8→4), normalisation `mean=0.5, std=0.5` (pixels dans [-1, 1], cf. observations de l'EDA), `val_split: 0.1`, `seed: 42`, `batch_size: 128`.
+- Ajout de `src/data/dataset.py` : `load_config()` (lecture YAML), `build_transform()` (pad + normalisation), `get_dataloaders()` — construit train/val/test `DataLoader` ; le split val est prélevé sur le train set officiel (seed fixé via `torch.Generator`), le test set officiel reste réservé à l'évaluation finale (FID).
+- Ajout de `src/utils/seed.py` (`set_seed()` — random/numpy/torch/cuda) pour la reproductibilité des futurs entraînements.
+- Ajout de `pytest` à `requirements.txt` (absent jusqu'ici, nécessaire pour les tests unitaires prévus dans `tests/`).
+- Ajout de `tests/test_data.py` (3 tests, tous passants) :
+  - shape de sortie du DataLoader `(128, 1, 32, 32)` et pixels dans [-1, 1] ;
+  - tailles des splits train/val/test cohérentes (54000/6000/10000) ;
+  - reproductibilité du split train/val avec le seed fixé (mêmes indices entre deux appels).
+- Checklist "Pipeline de chargement / prétraitement" de `TASKS.md` cochée.
+- **Prochaine étape :** rôle Model — processus de diffusion direct (bruitage) from scratch (`src/models/ddpm/`), première brique du DDPM.

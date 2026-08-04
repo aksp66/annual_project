@@ -22,3 +22,6 @@ streamlit
 
 # Notebooks
 jupyter
+
+# Tests
+pytest
