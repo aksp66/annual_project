@@ -7,10 +7,10 @@ Décompose chaque fonctionnalité de [`PLANNING.md`](PLANNING.md) en actions con
 ## Data / Experiment Engineer
 
 ### Choix du dataset
-- [ ] Comparer Fashion-MNIST vs CIFAR-10 downscalé (volume, résolution, temps d'entraînement estimé sur le matériel disponible)
-- [ ] Vérifier la licence et la disponibilité (`torchvision.datasets`)
-- [ ] Tester le téléchargement et le chargement en local
-- [ ] Documenter la décision et sa justification dans `HISTORY.md`
+- [x] Comparer Fashion-MNIST vs CIFAR-10 downscalé (volume, résolution, temps d'entraînement estimé sur le matériel disponible)
+- [x] Vérifier la licence et la disponibilité (`torchvision.datasets`)
+- [x] Tester le téléchargement et le chargement en local
+- [x] Documenter la décision et sa justification dans `HISTORY.md`
 
 ### EDA (analyse exploratoire)
 - [ ] Charger train/test, vérifier les tailles et le format (dimensions, canaux, dtype)

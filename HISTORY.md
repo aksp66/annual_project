@@ -68,3 +68,27 @@ Journal chronologique des actions réalisées sur le projet. Une entrée par jou
 
 - Création et push de la branche `aaksp`, espace de travail personnel pour AHLI Kossi Sitsofe Pédro (rôle Model), en dehors de la convention `model/`, `data/`... de `CONTRIBUTING.md`.
 - Restriction d'accès en écriture (lui seul) **non appliquée automatiquement** : Git n'a pas de notion d'accès par branche, il faut une règle de protection GitHub (Settings → Branches → Restrict who can push to matching branches) — à configurer manuellement par le propriétaire du repo.
+
+---
+
+## 2026-08-04 — Choix du dataset : Fashion-MNIST
+
+Travail réalisé sur la branche `aaksp` (non mergé sur `master`), première tâche de la Phase 1 (`PLANNING.md`) / checklist "Choix du dataset" (`TASKS.md`).
+
+- Environnement : création du venv (`.venv`), installation de `requirements.txt` (`torch` 2.13 CPU-only, `torchvision` 0.28 — pas de GPU disponible sur la machine de dev).
+- Ajout de `scripts/compare_datasets.py` : télécharge Fashion-MNIST et CIFAR-10 via `torchvision.datasets` dans `data/raw/`, vérifie le chargement local (`DataLoader`, shapes, plage de pixels) et affiche un comparatif chiffré.
+- Résultats mesurés :
+
+  |Dataset|Train|Test|Taille image|Classes|Poids disque|Temps de chargement|
+  |---|---|---|---|---|---|---|
+  |Fashion-MNIST|60000|10000|(1, 28, 28)|10|81.85 Mo|33.9 s|
+  |CIFAR-10|50000|10000|(3, 32, 32)|10|177.59 Mo|1413.6 s (~23 min)|
+
+  - Ratio de volume de calcul par image (pixels × canaux) CIFAR-10 vs Fashion-MNIST : **x3.92**.
+  - Chargement `DataLoader` vérifié pour les deux (shape batch correcte, pixels normalisés dans [0, 1] via `ToTensor`).
+  - Licence/disponibilité : les deux sont standard, publics, chargés nativement par `torchvision.datasets` sans restriction pour un usage académique.
+
+- **Décision actée : Fashion-MNIST.**
+  - Justification : pas de GPU disponible (CPU only) et budget de calcul du rôle Model limité (~14h pour DDPM + GAN + étude d'ablation, cf. `PLANNING.md`). Fashion-MNIST est ~4x moins coûteux par image (niveaux de gris 28×28 vs RGB 32×32), et son volume/poids sur disque est nettement plus léger et rapide à charger. Le format simple (1 canal, 10 classes équilibrées, `torchvision.datasets.FashionMNIST`) convient bien à une implémentation from scratch d'un U-Net de débruitage et d'un DCGAN dans le temps imparti, tout en restant assez complexe visuellement pour une comparaison DDPM vs GAN pertinente (contrairement à MNIST chiffres, plus trivial).
+  - CIFAR-10 downscalé reste documenté comme alternative écartée : complexité RGB inutile au vu du budget de calcul CPU disponible.
+- **Prochaine étape :** EDA de Fashion-MNIST (distributions de classes, exemples, statistiques de pixels) dans `notebooks/`.
