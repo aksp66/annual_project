@@ -50,6 +50,10 @@ source .venv/bin/activate   # ou .venv\Scripts\activate sous Windows
 pip install -r requirements.txt
 ```
 
+## Planning
+
+Découpage du travail par phase, tâche, rôle et durée estimée : voir [`PLANNING.md`](PLANNING.md).
+
 ## Contribuer
 
 Convention de branches et workflow de PR : voir [`CONTRIBUTING.md`](CONTRIBUTING.md).
