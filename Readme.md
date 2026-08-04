@@ -8,9 +8,9 @@ Implémentation from scratch d'un modèle de diffusion débruitant (DDPM) et com
 
 |Nom|Rôle|
 |---|---|
-|*à compléter*|Data / Experiment Engineer|
-|*à compléter*|Model / Research Engineer|
-|*à compléter*|Reporting / Backend Developer|
+|*à compléter* (`anne952` ou `Mabelle95`)|Data / Experiment Engineer|
+|AHLI Kossi Sitsofe Pédro|Model / Research Engineer (principal), appui Reporting / Backend Developer|
+|*à compléter* (`anne952` ou `Mabelle95`)|Reporting / Backend Developer|
 
 ## Sujet
 

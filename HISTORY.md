@@ -53,3 +53,11 @@ Journal chronologique des actions réalisées sur le projet. Une entrée par jou
 
 - Ajout de `TASKS.md` : chaque fonctionnalité de `PLANNING.md` (choix du dataset, EDA, pipeline de données, diffusion forward/U-Net, DCGAN, entraînement baseline, étude d'ablation, évaluation, API, app, Docker, rapport, présentation) décomposée en checklist d'actions concrètes par rôle.
 - Liens croisés ajoutés entre `Readme.md`, `PLANNING.md` et `TASKS.md`.
+
+---
+
+## 2026-08-04 — Premier rôle attribué
+
+- AHLI Kossi Sitsofe Pédro se positionne comme **Model / Research Engineer** (principal), avec un appui secondaire sur **Reporting / Backend Developer**.
+- Tableau Équipe du `Readme.md` mis à jour en conséquence.
+- **Reste à faire :** répartir Data / Experiment Engineer et Reporting / Backend Developer (principal) entre `anne952` et `Mabelle95`.
