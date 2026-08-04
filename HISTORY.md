@@ -129,3 +129,18 @@ Travail réalisé sur la branche `aaksp` (non mergé sur `master`), checklist "P
   - reproductibilité du split train/val avec le seed fixé (mêmes indices entre deux appels).
 - Checklist "Pipeline de chargement / prétraitement" de `TASKS.md` cochée.
 - **Prochaine étape :** rôle Model — processus de diffusion direct (bruitage) from scratch (`src/models/ddpm/`), première brique du DDPM.
+
+---
+
+## 2026-08-04 — Processus de diffusion direct (forward), from scratch
+
+Travail réalisé sur la branche `aaksp` (non mergé sur `master`), checklist "Processus de diffusion (forward) — from scratch" de `TASKS.md`, rôle Model.
+
+- Ajout de `src/models/ddpm/diffusion.py` :
+  - `make_beta_schedule()` : schedule `linear` (Ho et al. 2020) et `cosine` (Nichol & Dhariwal 2021), les deux implémentés et testés.
+  - `GaussianDiffusion` : précalcule `betas`, `alphas`, `alphas_cumprod` et leurs racines ; `q_sample(x0, t, noise)` implémente la **formule fermée** `x_t = sqrt(ᾱ_t)·x_0 + sqrt(1-ᾱ_t)·noise`, donc un bruitage direct à un pas `t` arbitraire sans boucle sur les pas intermédiaires.
+- Ajout de `configs/ddpm_base.yaml` : baseline `timesteps=1000`, `schedule=linear`, `beta_start=1e-4`, `beta_end=0.02` (valeurs standard Ho et al. 2020). Servira de base à l'étude d'ablation sur le nombre de pas (Phase 2 de `PLANNING.md`).
+- Ajout de `tests/test_diffusion.py` (6 tests, tous passants) : shape/bornes du schedule linéaire, schedule cosine fonctionnel, shape de `q_sample`, `x_t ≈ x_0` à `t=0`, bruit croissant avec `t`, et surtout **`x_T` statistiquement proche de `N(0,1)`** (moyenne/écart-type mesurés sur 2000 échantillons, tolérance 0.05).
+- Ajout de `notebooks/02_diffusion_forward.ipynb` (exécuté de bout en bout) : vérification visuelle du bruitage progressif sur 4 images Fashion-MNIST à `t ∈ {0, 50, 100, 250, 500, 999}`, histogramme des pixels de `x_T` superposé à la gaussienne théorique. Résultat mesuré : `x_T` moyenne=-0.0038, écart-type=1.0033 — conforme à l'attendu.
+- Checklist "Processus de diffusion (forward)" de `TASKS.md` cochée.
+- **Prochaine étape :** rôle Model — U-Net de débruitage + processus inverse (`src/models/ddpm/`), embedding du pas de temps, loss MSE, boucle d'échantillonnage.

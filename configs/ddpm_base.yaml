@@ -1,0 +1,9 @@
+# Config baseline du processus de diffusion DDPM (cf. PLANNING.md Phase 2).
+# Servira aussi de base à l'étude d'ablation sur le nombre de pas
+# (configs/ddpm_steps100.yaml, ddpm_steps400.yaml, ddpm_steps1000.yaml...).
+
+timesteps: 1000
+schedule: linear   # 'linear' (Ho et al. 2020) ou 'cosine' (Nichol & Dhariwal 2021)
+beta_start: 0.0001
+beta_end: 0.02
+seed: 42

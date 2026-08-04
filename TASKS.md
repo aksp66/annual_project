@@ -40,10 +40,10 @@ Décompose chaque fonctionnalité de [`PLANNING.md`](PLANNING.md) en actions con
 ## Model / Research Engineer
 
 ### Processus de diffusion (forward) — from scratch
-- [ ] Choisir et implémenter le schedule de bruit β_t (linéaire, ou cosine)
-- [ ] Implémenter la formule fermée q(x_t | x_0) (bruitage direct sans boucle)
-- [ ] Vérifier visuellement le bruitage progressif sur quelques images
-- [ ] Vérifier que x_T est proche d'un bruit gaussien pur
+- [x] Choisir et implémenter le schedule de bruit β_t (linéaire, ou cosine)
+- [x] Implémenter la formule fermée q(x_t | x_0) (bruitage direct sans boucle)
+- [x] Vérifier visuellement le bruitage progressif sur quelques images
+- [x] Vérifier que x_T est proche d'un bruit gaussien pur
 
 ### U-Net de débruitage + processus inverse
 - [ ] Définir l'architecture U-Net (blocs conv, skip connections, downsampling/upsampling)
