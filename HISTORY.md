@@ -92,3 +92,23 @@ Travail réalisé sur la branche `aaksp` (non mergé sur `master`), première t�
   - Justification : pas de GPU disponible (CPU only) et budget de calcul du rôle Model limité (~14h pour DDPM + GAN + étude d'ablation, cf. `PLANNING.md`). Fashion-MNIST est ~4x moins coûteux par image (niveaux de gris 28×28 vs RGB 32×32), et son volume/poids sur disque est nettement plus léger et rapide à charger. Le format simple (1 canal, 10 classes équilibrées, `torchvision.datasets.FashionMNIST`) convient bien à une implémentation from scratch d'un U-Net de débruitage et d'un DCGAN dans le temps imparti, tout en restant assez complexe visuellement pour une comparaison DDPM vs GAN pertinente (contrairement à MNIST chiffres, plus trivial).
   - CIFAR-10 downscalé reste documenté comme alternative écartée : complexité RGB inutile au vu du budget de calcul CPU disponible.
 - **Prochaine étape :** EDA de Fashion-MNIST (distributions de classes, exemples, statistiques de pixels) dans `notebooks/`.
+
+---
+
+## 2026-08-04 — EDA Fashion-MNIST
+
+Travail réalisé sur la branche `aaksp` (non mergé sur `master`), checklist "EDA (analyse exploratoire)" de `TASKS.md`.
+
+- Ajout de `notebooks/01_eda_dataset.ipynb` (convention de nommage `NN_sujet.ipynb` de `notebooks/README.md`), exécuté de bout en bout (`jupyter nbconvert --execute --inplace`).
+- Environnement : installation complète de `requirements.txt` dans le venv (pandas, scikit-learn, matplotlib, jupyter/nbconvert/ipykernel, fastapi, streamlit... manquaient, seuls torch/torchvision avaient été installés lors du choix du dataset).
+- Résultats de l'EDA :
+  - **Format** : train `(60000, 28, 28)` uint8, test `(10000, 28, 28)` uint8, labels `int64`, 1 canal (niveaux de gris), pixels dans [0, 255].
+  - **Valeurs manquantes / corrompues** : 0 NaN, 0 label manquant, correspondance images/labels 1-à-1 vérifiée sur train et test.
+  - **Valeurs aberrantes** : dimensions uniques `(28, 28)` sur toutes les images, aucun pixel hors [0, 255].
+  - **Doublons exacts** (hash MD5 par image) : 0 doublon en train (60000 images uniques), 0 en test (10000 uniques).
+  - **Équilibre des classes** : parfaitement équilibré — 6000 images/classe en train, 1000/classe en test, 10 classes.
+  - **Statistiques pixels (train, échelle [0,1])** : moyenne = 0.2860, écart-type = 0.3530 (moyenne = 72.94, écart-type = 90.02 en échelle [0,255]) — base pour la normalisation du `DataLoader`.
+  - **Visualisation** : échantillon de 6 images par classe affiché ; classes visuellement proches identifiées (`Shirt` vs `T-shirt/top` vs `Coat` vs `Pullover`), pertinent pour juger la finesse de génération DDPM vs GAN.
+- **Observations consignées** (section "Données" du rapport) : dataset propre nativement (pas de nettoyage requis), pas de resize nécessaire (déjà 28×28), normalisation recommandée vers [-1, 1] pour la diffusion (`x_norm = (x/255 - 0.5) / 0.5`).
+- Checklist "EDA" de `TASKS.md` cochée.
+- **Prochaine étape :** pipeline de chargement/prétraitement (`src/data/`, `configs/data.yaml`) — `Dataset`/`DataLoader` PyTorch, normalisation, split train/éval, test unitaire de shape/plage de valeurs.
