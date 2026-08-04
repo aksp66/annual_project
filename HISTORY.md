@@ -46,3 +46,10 @@ Journal chronologique des actions réalisées sur le projet. Une entrée par jou
 - Charge totale indicative par rôle (Data ~5h, Model ~14h, Backend ~9h) à ajuster une fois les rôles nommément attribués et le dataset tranché.
 - Lien ajouté depuis `Readme.md`.
 - **Reste à faire :** attribution nominative des rôles (toi, `anne952`, `Mabelle95`), choix définitif du dataset (Fashion-MNIST vs CIFAR-10 downscalé).
+
+---
+
+## 2026-08-04 — Détail des tâches par rôle et fonctionnalité
+
+- Ajout de `TASKS.md` : chaque fonctionnalité de `PLANNING.md` (choix du dataset, EDA, pipeline de données, diffusion forward/U-Net, DCGAN, entraînement baseline, étude d'ablation, évaluation, API, app, Docker, rapport, présentation) décomposée en checklist d'actions concrètes par rôle.
+- Liens croisés ajoutés entre `Readme.md`, `PLANNING.md` et `TASKS.md`.

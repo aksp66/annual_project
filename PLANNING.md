@@ -4,6 +4,8 @@ Plan calé sur le fil rouge du cours : 14 séances de 2h (28h), réparties en 4 
 
 Méthode : avancer par tranches verticales (un mini bout-en-bout qui marche tôt, puis on améliore) plutôt que tout finir un module avant de passer au suivant. Chaque tâche terminée est loguée dans [`HISTORY.md`](HISTORY.md).
 
+Le détail des actions concrètes derrière chaque tâche (checklist) est dans [`TASKS.md`](TASKS.md).
+
 > Le choix définitif du dataset (Fashion-MNIST vs CIFAR-10 downscalé) n'est pas encore tranché — c'est la première tâche de la Phase 1, elle conditionne les temps d'entraînement estimés ci-dessous.
 
 ## Phase 1 — Cadrage (S1-S2, ~4h)

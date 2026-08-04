@@ -53,6 +53,7 @@ pip install -r requirements.txt
 ## Planning
 
 Découpage du travail par phase, tâche, rôle et durée estimée : voir [`PLANNING.md`](PLANNING.md).
+Détail des actions concrètes par rôle et fonctionnalité : voir [`TASKS.md`](TASKS.md).
 
 ## Contribuer
 
