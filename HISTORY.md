@@ -27,3 +27,10 @@ Journal chronologique des actions réalisées sur le projet. Une entrée par jou
 - Réécriture de `Readme.md` : présentation du projet, structure du repo, instructions d'installation.
 
 **Prochaine étape :** exploration des datasets candidats (Fashion-MNIST vs CIFAR-10 downscalé) pour trancher selon le volume, la complexité visuelle et le budget de calcul disponible.
+
+---
+
+## 2026-08-04 — Convention de branches
+
+- Ajout de `CONTRIBUTING.md` : stratégie de branches (GitHub Flow simplifié, `master` protégé, branches courtes préfixées `data/`, `model/`, `exp/`, `app/`, `docker/`, `docs/`), workflow de Pull Request, rappel des exigences de reproductibilité (seed + config + script).
+- Lien ajouté depuis `Readme.md`.

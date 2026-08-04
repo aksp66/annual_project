@@ -50,6 +50,10 @@ source .venv/bin/activate   # ou .venv\Scripts\activate sous Windows
 pip install -r requirements.txt
 ```
 
+## Contribuer
+
+Convention de branches et workflow de PR : voir [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
 ## Suivi du projet
 
 L'avancement (décisions, actions, résultats) est journalisé dans [`HISTORY.md`](HISTORY.md).
