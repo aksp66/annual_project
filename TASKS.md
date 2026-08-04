@@ -67,8 +67,8 @@ Décompose chaque fonctionnalité de [`PLANNING.md`](PLANNING.md) en actions con
 - [x] Logger les courbes de loss (CSV + matplotlib, ou tensorboard)
 
 ### Étude d'ablation (nombre de pas de diffusion)
-- [ ] Définir ≥3 configs (ex. 100 / 400 / 1000 pas) dans `configs/`
-- [ ] Lancer chaque config avec le même seed/dataset
+- [x] Définir ≥3 configs (ex. 100 / 400 / 1000 pas) dans `configs/`
+- [x] Lancer chaque config avec le même seed/dataset
 - [ ] Mesurer temps d'entraînement et temps de génération par config
 - [ ] Comparer la qualité (visuelle et/ou FID) par config
 - [ ] Rédiger le tableau comparatif (base de la section "Étude d'ablation" du rapport)

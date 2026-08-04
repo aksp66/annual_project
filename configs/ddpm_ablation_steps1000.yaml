@@ -1,0 +1,28 @@
+# Étude d'ablation — nombre de pas de diffusion (cf. PLANNING.md Phase 2).
+# Seul `timesteps` varie entre ddpm_ablation_steps{100,400,1000}.yaml ; même
+# architecture, même seed, même budget d'entraînement (num_steps) pour une
+# comparaison équitable.
+#
+# NB : distinct de configs/ddpm_base.yaml (baseline, entraîné 1000 steps) —
+# ici 500 steps, budget identique aux deux autres configs d'ablation.
+
+timesteps: 1000
+schedule: linear
+beta_start: 0.0001
+beta_end: 0.02
+seed: 42
+
+model:
+  in_channels: 1
+  base_channels: 32
+  channel_mults: [1, 2, 4]
+  num_res_blocks: 2
+
+training:
+  num_steps: 500
+  lr: 0.0002
+  log_every: 10
+  sample_every: 250
+  checkpoint_every: 250
+  n_samples: 8
+  output_dir: experiments/ddpm_ablation_steps1000

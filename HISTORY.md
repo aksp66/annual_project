@@ -222,3 +222,18 @@ Travail réalisé sur la branche `aaksp` (non mergé sur `master`), rôle Model.
 - **Conclusion stabilité (base de la section Discussion du rapport)** : à budget de steps identique, le DDPM converge de façon prévisible et reproductible tandis que le GAN nécessite un suivi actif de l'équilibre G/D et reste plus sensible à l'instabilité — cohérent avec la littérature (Ho et al. 2020 vs Goodfellow et al. 2014).
 - Checklist "Entraînement baseline (DDPM + GAN)" de `TASKS.md` cochée (seed/config/budget comparable, deux entraînements lancés, checkpoints réguliers, courbes de loss CSV + matplotlib).
 - **Prochaine étape :** étude d'ablation sur le nombre de pas de diffusion (≥3 configs, ex. 100/400/1000).
+
+---
+
+## 2026-08-04 — Étude d'ablation : nombre de pas de diffusion (lancée)
+
+Travail réalisé sur la branche `aaksp` (non mergé sur `master`), rôle Model, checklist "Étude d'ablation (nombre de pas de diffusion)" de `TASKS.md`.
+
+- Extension de `src/training/train_ddpm.py` : à la fin de l'entraînement, mesure isolée du **temps de génération** (`p_sample_loop` chronométré séparément des échantillons périodiques) et écriture d'un `summary.json` par run (`timesteps`, `num_train_steps`, `total_train_time_s`, `final_loss_avg_last20`, `generation_time_s`) — base directe du tableau comparatif de l'ablation.
+- Ajout de 3 configs, seule `timesteps` varie (architecture, seed=42, `beta_start`/`beta_end`, budget d'entraînement **identiques** pour une comparaison équitable) :
+  - `configs/ddpm_ablation_steps100.yaml` (`timesteps: 100`)
+  - `configs/ddpm_ablation_steps400.yaml` (`timesteps: 400`)
+  - `configs/ddpm_ablation_steps1000.yaml` (`timesteps: 1000`, distinct de `configs/ddpm_base.yaml` qui reste la config baseline à 1000 steps d'entraînement).
+  - Budget d'entraînement réduit à `num_steps: 500` (vs 1000 pour la baseline) pour que les 3 runs d'ablation tiennent dans un temps de calcul CPU raisonnable (~3h estimées pour les 3 runs cumulés).
+- **Les 3 entraînements sont lancés séquentiellement en arrière-plan** ; résultats (temps d'entraînement/génération par config, qualité visuelle comparée) à consigner dans une prochaine entrée une fois terminés.
+- Checklist `TASKS.md` : "définir les configs" et "lancer chaque config" cochées ; mesure/comparaison/tableau en attente des résultats.

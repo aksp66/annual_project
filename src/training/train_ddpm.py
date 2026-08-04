@@ -8,6 +8,7 @@ Usage : python -m src.training.train_ddpm --config configs/ddpm_base.yaml
 
 import argparse
 import csv
+import json
 import time
 from pathlib import Path
 
@@ -62,6 +63,7 @@ def train(ddpm_config_path: str, data_config_path: str = "configs/data.yaml") ->
     with open(log_path, "w", newline="", encoding="utf-8") as f:
         csv.writer(f).writerow(["step", "loss", "elapsed_s"])
 
+    recent_losses = []
     t_start = time.perf_counter()
     for step in range(1, train_cfg["num_steps"] + 1):
         try:
@@ -76,6 +78,9 @@ def train(ddpm_config_path: str, data_config_path: str = "configs/data.yaml") ->
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+
+        recent_losses.append(loss.item())
+        recent_losses = recent_losses[-20:]
 
         if step % train_cfg["log_every"] == 0 or step == 1:
             elapsed = time.perf_counter() - t_start
@@ -97,7 +102,28 @@ def train(ddpm_config_path: str, data_config_path: str = "configs/data.yaml") ->
             save_sample_grid(samples, samples_dir / f"step_{step:06d}.png", nrow=4)
             model.train()
 
-    print(f"Entraînement terminé en {time.perf_counter() - t_start:.0f}s. Sorties dans {output_dir}")
+    total_train_time_s = time.perf_counter() - t_start
+
+    # Mesure isolée du temps de génération (hors entraînement), pour l'étude d'ablation
+    # sur le nombre de pas de diffusion (cf. TASKS.md).
+    image_size = data_config["image_size"]
+    t_gen = time.perf_counter()
+    diffusion.p_sample_loop(model, shape=(train_cfg["n_samples"], 1, image_size, image_size))
+    generation_time_s = time.perf_counter() - t_gen
+
+    summary = {
+        "config": str(ddpm_config_path),
+        "timesteps": diffusion.timesteps,
+        "num_train_steps": train_cfg["num_steps"],
+        "total_train_time_s": round(total_train_time_s, 2),
+        "final_loss_avg_last20": round(sum(recent_losses) / len(recent_losses), 4),
+        "generation_time_s": round(generation_time_s, 2),
+        "n_samples_generated": train_cfg["n_samples"],
+    }
+    with open(output_dir / "summary.json", "w", encoding="utf-8") as f:
+        json.dump(summary, f, indent=2)
+
+    print(f"Entraînement terminé en {total_train_time_s:.0f}s. Génération ({train_cfg['n_samples']} images) : {generation_time_s:.1f}s. Sorties dans {output_dir}")
 
 
 if __name__ == "__main__":
