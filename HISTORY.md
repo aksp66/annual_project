@@ -169,3 +169,23 @@ Travail réalisé sur la branche `aaksp` (non mergé sur `master`), checklist "U
   - `save_sample_grid` testé, échantillons sauvegardés dans `experiments/ddpm_smoke_test/samples/` (non versionné, cf. `.gitignore`).
 - Checklist "U-Net de débruitage + processus inverse" de `TASKS.md` cochée.
 - **Prochaine étape :** rôle Model — entraînement DDPM baseline (config par défaut, `experiments/ddpm_baseline/`), puis DCGAN (`src/models/gan/`).
+
+---
+
+## 2026-08-04 — Entraînement DDPM baseline (lancé) + DCGAN
+
+Travail réalisé sur la branche `aaksp` (non mergé sur `master`), rôle Model.
+
+**Entraînement DDPM baseline (`PLANNING.md` Phase 2) :**
+- Calibration mesurée hors notebook : **~6.76 s/step** (batch=128, U-Net ~3.54M paramètres, CPU). Sur cette base, `configs/ddpm_base.yaml` complété avec une section `training` (`num_steps: 1000`, `lr: 2e-4`, `sample_every`/`checkpoint_every: 250`) calée sur le budget de 2h de `PLANNING.md` (~1000 steps + 4 cycles de sampling complet ≈ 2h).
+- Ajout de `src/training/train_ddpm.py` : script reproductible (`python -m src.training.train_ddpm --config configs/ddpm_base.yaml`), seed fixé, logs CSV (`experiments/ddpm_baseline/log.csv`), checkpoints (`experiments/ddpm_baseline/checkpoints/`) et grilles d'échantillons (`experiments/ddpm_baseline/samples/`) sauvegardés à intervalles réguliers.
+- **Entraînement lancé en arrière-plan** (~2h estimées) ; résultats (courbe de loss finale, échantillons) à consigner dans une prochaine entrée `HISTORY.md` une fois terminé.
+
+**DCGAN (`TASKS.md` — rôle Model) :**
+- Ajout de `src/models/gan/generator.py` (`Generator`) : 4 blocs `ConvTranspose2d + BatchNorm + ReLU`, `z (100,1,1) → image 32×32×1`, sortie `Tanh` (cohérent avec la normalisation [-1,1] du pipeline de données).
+- Ajout de `src/models/gan/discriminator.py` (`Discriminator`) : 4 blocs `Conv2d + LeakyReLU(0.2)` (pas de BatchNorm sur la première couche, cf. Radford et al. 2015), sortie logit brut (compatible `BCEWithLogitsLoss`).
+- Ajout de `configs/gan_base.yaml` : `latent_dim=100`, `base_channels=64`, Adam `lr=2e-4, β1=0.5, β2=0.999` (valeurs standard DCGAN), **`num_steps=1000`** — même nombre de steps que le DDPM baseline pour un budget de calcul comparable (cf. `PLANNING.md`).
+- Ajout de `src/training/train_gan.py` : boucle d'entraînement alternée D puis G, init des poids `N(0, 0.02)` (Radford et al. 2015), logs CSV incluant **`loss_d`, `loss_g`, `D(real)`, `D(fake)`** à chaque `log_every` — mécanisme de suivi des courbes G/D pour repérer un éventuel mode collapse (ex. `D(fake)` qui stagne près de 0 ou 1, `loss_g` qui explose). L'analyse des courbes elles-mêmes se fera après l'entraînement baseline (prochaine tâche).
+- Ajout de `tests/test_gan.py` (5 tests, tous passants) : shape/plage du générateur (`Tanh` → [-1,1]), shape du discriminateur, pipeline G→D bout en bout, backward BCE fonctionnel, betas Adam lus depuis la config.
+- Checklists "DCGAN" de `TASKS.md` cochée.
+- **Prochaine étape :** attendre la fin de l'entraînement DDPM baseline (résultats à documenter), puis lancer l'entraînement GAN baseline avec le même budget.

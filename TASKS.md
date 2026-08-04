@@ -54,11 +54,11 @@ Décompose chaque fonctionnalité de [`PLANNING.md`](PLANNING.md) en actions con
 - [x] Sauvegarder des échantillons générés à intervalles réguliers pendant l'entraînement
 
 ### DCGAN
-- [ ] Définir l'architecture du générateur (conv transposées, batchnorm, activations)
-- [ ] Définir l'architecture du discriminateur (conv, LeakyReLU)
-- [ ] Implémenter la loss adversariale (BCE) et les optimizers (Adam, β1=0.5)
-- [ ] Implémenter la boucle d'entraînement (alternance générateur/discriminateur)
-- [ ] Suivre les courbes de loss G/D pour repérer un éventuel mode collapse
+- [x] Définir l'architecture du générateur (conv transposées, batchnorm, activations)
+- [x] Définir l'architecture du discriminateur (conv, LeakyReLU)
+- [x] Implémenter la loss adversariale (BCE) et les optimizers (Adam, β1=0.5)
+- [x] Implémenter la boucle d'entraînement (alternance générateur/discriminateur)
+- [x] Suivre les courbes de loss G/D pour repérer un éventuel mode collapse
 
 ### Entraînement baseline (DDPM + GAN)
 - [ ] Fixer seed, config, budget d'entraînement comparable entre les deux modèles

@@ -1,0 +1,20 @@
+# Config baseline DCGAN (cf. PLANNING.md Phase 2) — budget comparable au DDPM baseline
+# (même num_steps que configs/ddpm_base.yaml pour une comparaison équitable).
+
+seed: 42
+
+model:
+  latent_dim: 100
+  base_channels: 64
+  out_channels: 1   # doit correspondre à configs/data.yaml (Fashion-MNIST, niveaux de gris)
+
+training:
+  num_steps: 1000
+  lr: 0.0002
+  beta1: 0.5   # Radford et al. 2015 (DCGAN)
+  beta2: 0.999
+  log_every: 10
+  sample_every: 250
+  checkpoint_every: 250
+  n_samples: 8
+  output_dir: experiments/gan_baseline

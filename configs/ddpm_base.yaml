@@ -15,3 +15,15 @@ model:
   base_channels: 32
   channel_mults: [1, 2, 4]   # résolutions 32 -> 16 -> 8
   num_res_blocks: 2
+
+# Entraînement baseline (src/training/train_ddpm.py).
+# num_steps calé sur le budget de calcul CPU dispo (~6.8s/step mesuré,
+# cf. HISTORY.md) pour rester proche du budget de 2h de PLANNING.md.
+training:
+  num_steps: 1000
+  lr: 0.0002
+  log_every: 10
+  sample_every: 250
+  checkpoint_every: 250
+  n_samples: 8
+  output_dir: experiments/ddpm_baseline
