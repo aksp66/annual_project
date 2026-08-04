@@ -205,3 +205,20 @@ Travail réalisé sur la branche `aaksp` (non mergé sur `master`), rôle Model.
 - 4 checkpoints sauvegardés (`experiments/ddpm_baseline/checkpoints/ddpm_step0000{250,500,750,1000}.pt`), logs complets dans `experiments/ddpm_baseline/log.csv`.
 - **Limite à noter pour le rapport (section Discussion/Limites)** : budget CPU très inférieur à un entraînement DDPM typique (dizaines de milliers de steps sur GPU) ; les résultats sont corrects mais pas encore optimaux (pas de plateau de convergence atteint, la loss continuait de descendre légèrement en fin d'entraînement).
 - **Prochaine étape :** lancer l'entraînement GAN baseline (`configs/gan_base.yaml`, même `num_steps=1000`) pour une comparaison à budget de calcul comparable.
+
+---
+
+## 2026-08-04 — Résultats de l'entraînement GAN baseline + comparaison de stabilité
+
+Travail réalisé sur la branche `aaksp` (non mergé sur `master`), rôle Model. `src/training/train_gan.py` exécuté avec `configs/gan_base.yaml` (même `num_steps=1000` que le DDPM, pour un budget comparable).
+
+- **Durée réelle** : 1012.5 s (~17 min) — **~7x plus rapide que le DDPM** (7235.6 s) pour le même nombre de steps : le GAN ne fait qu'une passe générateur (pas de boucle de débruitage à 1000 pas pour échantillonner), donc à budget de calcul égal en nombre de steps, le coût réel diffère fortement entre les deux familles de modèles — point à chiffrer dans la section "Résultats" du rapport (temps de génération DDPM multi-pas vs GAN one-shot).
+- **Loss et scores du discriminateur** (`experiments/gan_baseline/log.csv`) :
+  - `loss_d` : 1.757 (step 1) → 0.624 (moy. 20 derniers logs).
+  - `loss_g` : 1.562 → 2.251 (moy. 20 derniers), avec des pics ponctuels jusqu'à **5.38** (step 40).
+  - `D(real)` : 0.296 → 0.780 ; `D(fake)` : 0.326 → 0.237 — le discriminateur prend l'avantage sur le générateur en fin d'entraînement (déséquilibre net par rapport à l'équilibre théorique à 0.5), instabilité typique d'un GAN mais **pas de mode collapse total** observé (diversité de formes conservée visuellement).
+- **Échantillons générés** (`experiments/gan_baseline/samples/`, non versionnés) : `step_000250.png` encore proche de bruit texturé, `step_000750.png`/`step_001000.png` montrent des silhouettes de vêtements (pantalons, hauts) avec des **artefacts en damier** caractéristiques des couches `ConvTranspose2d` (cf. Odena et al., *Deconvolution and Checkerboard Artifacts*, 2016 — à citer en Travaux liés/Discussion).
+- Ajout de `notebooks/04_baseline_training_curves.ipynb` (exécuté de bout en bout) : courbes de loss DDPM et GAN (CSV + matplotlib), comparaison `D(real)` vs `D(fake)` par rapport à l'équilibre théorique 0.5. Confirme visuellement : DDPM = décroissance lisse et monotone ; GAN = dynamique adversariale oscillante.
+- **Conclusion stabilité (base de la section Discussion du rapport)** : à budget de steps identique, le DDPM converge de façon prévisible et reproductible tandis que le GAN nécessite un suivi actif de l'équilibre G/D et reste plus sensible à l'instabilité — cohérent avec la littérature (Ho et al. 2020 vs Goodfellow et al. 2014).
+- Checklist "Entraînement baseline (DDPM + GAN)" de `TASKS.md` cochée (seed/config/budget comparable, deux entraînements lancés, checkpoints réguliers, courbes de loss CSV + matplotlib).
+- **Prochaine étape :** étude d'ablation sur le nombre de pas de diffusion (≥3 configs, ex. 100/400/1000).

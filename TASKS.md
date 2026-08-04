@@ -61,10 +61,10 @@ Décompose chaque fonctionnalité de [`PLANNING.md`](PLANNING.md) en actions con
 - [x] Suivre les courbes de loss G/D pour repérer un éventuel mode collapse
 
 ### Entraînement baseline (DDPM + GAN)
-- [ ] Fixer seed, config, budget d'entraînement comparable entre les deux modèles
-- [ ] Lancer les deux entraînements baseline
-- [ ] Sauvegarder les checkpoints régulièrement
-- [ ] Logger les courbes de loss (CSV + matplotlib, ou tensorboard)
+- [x] Fixer seed, config, budget d'entraînement comparable entre les deux modèles
+- [x] Lancer les deux entraînements baseline
+- [x] Sauvegarder les checkpoints régulièrement
+- [x] Logger les courbes de loss (CSV + matplotlib, ou tensorboard)
 
 ### Étude d'ablation (nombre de pas de diffusion)
 - [ ] Définir ≥3 configs (ex. 100 / 400 / 1000 pas) dans `configs/`
