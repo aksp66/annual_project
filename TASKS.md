@@ -46,12 +46,12 @@ Décompose chaque fonctionnalité de [`PLANNING.md`](PLANNING.md) en actions con
 - [x] Vérifier que x_T est proche d'un bruit gaussien pur
 
 ### U-Net de débruitage + processus inverse
-- [ ] Définir l'architecture U-Net (blocs conv, skip connections, downsampling/upsampling)
-- [ ] Implémenter l'embedding sinusoïdal du pas de temps t
-- [ ] Implémenter la loss (MSE entre bruit prédit et bruit réel)
-- [ ] Implémenter la boucle d'échantillonnage (sampling ancestral, x_T → x_0)
-- [ ] Tester les shapes sur un batch avant l'entraînement complet
-- [ ] Sauvegarder des échantillons générés à intervalles réguliers pendant l'entraînement
+- [x] Définir l'architecture U-Net (blocs conv, skip connections, downsampling/upsampling)
+- [x] Implémenter l'embedding sinusoïdal du pas de temps t
+- [x] Implémenter la loss (MSE entre bruit prédit et bruit réel)
+- [x] Implémenter la boucle d'échantillonnage (sampling ancestral, x_T → x_0)
+- [x] Tester les shapes sur un batch avant l'entraînement complet
+- [x] Sauvegarder des échantillons générés à intervalles réguliers pendant l'entraînement
 
 ### DCGAN
 - [ ] Définir l'architecture du générateur (conv transposées, batchnorm, activations)

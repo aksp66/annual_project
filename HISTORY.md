@@ -144,3 +144,28 @@ Travail réalisé sur la branche `aaksp` (non mergé sur `master`), checklist "P
 - Ajout de `notebooks/02_diffusion_forward.ipynb` (exécuté de bout en bout) : vérification visuelle du bruitage progressif sur 4 images Fashion-MNIST à `t ∈ {0, 50, 100, 250, 500, 999}`, histogramme des pixels de `x_T` superposé à la gaussienne théorique. Résultat mesuré : `x_T` moyenne=-0.0038, écart-type=1.0033 — conforme à l'attendu.
 - Checklist "Processus de diffusion (forward)" de `TASKS.md` cochée.
 - **Prochaine étape :** rôle Model — U-Net de débruitage + processus inverse (`src/models/ddpm/`), embedding du pas de temps, loss MSE, boucle d'échantillonnage.
+
+---
+
+## 2026-08-04 — U-Net de débruitage + processus inverse
+
+Travail réalisé sur la branche `aaksp` (non mergé sur `master`), checklist "U-Net de débruitage + processus inverse" de `TASKS.md`, rôle Model.
+
+- Ajout de `src/models/ddpm/unet.py` :
+  - `SinusoidalTimeEmbedding` (embedding du pas `t`, façon Transformer), suivi d'un petit MLP (`Linear → SiLU → Linear`).
+  - `ResidualBlock` : GroupNorm + SiLU + conv, injection de l'embedding temporel, connexion résiduelle (projection 1×1 si les canaux changent).
+  - `UNet` : downsampling/upsampling avec skip connections, résolutions `32 → 16 → 8` (`channel_mults=[1,2,4]`, `base_channels=32`, 2 blocs résiduels par niveau). **Pas d'attention** — choix délibéré pour rester entraînable sur CPU (pas de GPU disponible, cf. décision dataset). ~3.54M paramètres.
+- Extension de `src/models/ddpm/diffusion.py` (`GaussianDiffusion`) :
+  - `p_losses(model, x0, t)` : loss MSE entre bruit réel et bruit prédit par le U-Net.
+  - `p_sample(model, x_t, t)` : un pas du processus inverse (sampling ancestral), variance a posteriori `posterior_variance` précalculée (Ho et al. 2020, eq. 7).
+  - `p_sample_loop(model, shape)` : boucle complète `x_T` (bruit pur) → `x_0`.
+- Mise à jour de `configs/ddpm_base.yaml` : section `model` (`in_channels`, `base_channels`, `channel_mults`, `num_res_blocks`).
+- Ajout de `src/utils/viz.py` (`save_sample_grid`) : sauvegarde une grille d'échantillons générés (dénormalisation [-1,1]→[0,1]), destinée à être appelée à intervalles réguliers pendant l'entraînement baseline.
+- Ajout de `tests/test_unet.py` (5 tests, tous passants) : shape de sortie du U-Net = shape d'entrée (plusieurs batch sizes/`t`), loss scalaire et finie, shape de `p_sample`, `p_sample_loop` de bout en bout sans NaN.
+- Ajout de `notebooks/03_unet_smoke_test.ipynb` (exécuté de bout en bout, ~36 min) — vérification mécanique avant l'entraînement baseline complet (pas un entraînement réel) :
+  - Shapes vérifiées sur un batch réel (128, 1, 32, 32).
+  - 300 pas de gradient (Adam, lr=2e-4) : **loss MSE 1.044 → 0.050**, confirme que le gradient circule correctement dans le U-Net et que la loss est apprenable.
+  - Boucle de sampling complète (1000 pas) exécutée en 146s, shape de sortie correcte, aucun NaN. Images générées peu réalistes (attendu — 300 pas seulement, pas la baseline).
+  - `save_sample_grid` testé, échantillons sauvegardés dans `experiments/ddpm_smoke_test/samples/` (non versionné, cf. `.gitignore`).
+- Checklist "U-Net de débruitage + processus inverse" de `TASKS.md` cochée.
+- **Prochaine étape :** rôle Model — entraînement DDPM baseline (config par défaut, `experiments/ddpm_baseline/`), puis DCGAN (`src/models/gan/`).

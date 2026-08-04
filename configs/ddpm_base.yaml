@@ -7,3 +7,11 @@ schedule: linear   # 'linear' (Ho et al. 2020) ou 'cosine' (Nichol & Dhariwal 20
 beta_start: 0.0001
 beta_end: 0.02
 seed: 42
+
+# U-Net de débruitage (src/models/ddpm/unet.py) — petit modèle, pas d'attention,
+# pour rester entraînable sur CPU (cf. HISTORY.md, pas de GPU disponible).
+model:
+  in_channels: 1
+  base_channels: 32
+  channel_mults: [1, 2, 4]   # résolutions 32 -> 16 -> 8
+  num_res_blocks: 2
