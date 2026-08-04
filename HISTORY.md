@@ -189,3 +189,19 @@ Travail réalisé sur la branche `aaksp` (non mergé sur `master`), rôle Model.
 - Ajout de `tests/test_gan.py` (5 tests, tous passants) : shape/plage du générateur (`Tanh` → [-1,1]), shape du discriminateur, pipeline G→D bout en bout, backward BCE fonctionnel, betas Adam lus depuis la config.
 - Checklists "DCGAN" de `TASKS.md` cochée.
 - **Prochaine étape :** attendre la fin de l'entraînement DDPM baseline (résultats à documenter), puis lancer l'entraînement GAN baseline avec le même budget.
+
+---
+
+## 2026-08-04 — Résultats de l'entraînement DDPM baseline
+
+Travail réalisé sur la branche `aaksp` (non mergé sur `master`), rôle Model. Suite de l'entrée précédente : l'entraînement lancé en arrière-plan (`src/training/train_ddpm.py`, `configs/ddpm_base.yaml`) est allé à son terme.
+
+- **Durée réelle** : 7235.6 s (~2h00), 1000 steps, batch=128, CPU uniquement — conforme à l'estimation.
+- **Loss MSE** : 1.044 (step 1) → **0.041 en moyenne sur les 20 derniers logs** (min ponctuel 0.027), décroissance stable sans divergence ni plateau anormal.
+- **Échantillons générés** (`experiments/ddpm_baseline/samples/`, non versionnés) : progression visuelle nette —
+  - `step_000250.png` : formes vagues, à peine des silhouettes.
+  - `step_000750.png` : vêtements déjà reconnaissables (silhouette de haut/t-shirt).
+  - `step_001000.png` : plusieurs échantillons clairement identifiables comme des vêtements (pantalon, haut), cohérent avec les classes Fashion-MNIST — résultat correct pour seulement 1000 steps sur CPU.
+- 4 checkpoints sauvegardés (`experiments/ddpm_baseline/checkpoints/ddpm_step0000{250,500,750,1000}.pt`), logs complets dans `experiments/ddpm_baseline/log.csv`.
+- **Limite à noter pour le rapport (section Discussion/Limites)** : budget CPU très inférieur à un entraînement DDPM typique (dizaines de milliers de steps sur GPU) ; les résultats sont corrects mais pas encore optimaux (pas de plateau de convergence atteint, la loss continuait de descendre légèrement en fin d'entraînement).
+- **Prochaine étape :** lancer l'entraînement GAN baseline (`configs/gan_base.yaml`, même `num_steps=1000`) pour une comparaison à budget de calcul comparable.
