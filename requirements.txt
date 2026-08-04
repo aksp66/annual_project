@@ -1,0 +1,24 @@
+# Coeur ML
+torch
+torchvision
+torchmetrics
+
+# Data / calcul scientifique
+numpy
+pandas
+scikit-learn
+
+# Config / suivi d'expériences
+pyyaml
+tqdm
+
+# Visualisation
+matplotlib
+
+# App de démonstration
+fastapi
+uvicorn
+streamlit
+
+# Notebooks
+jupyter

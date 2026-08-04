@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data (not versioned - too large / regenerated from scripts)
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Experiment outputs (checkpoints, logs, generated samples)
+experiments/**
+!experiments/.gitkeep
+
+# Model weights
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# Env / secrets
+.env
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

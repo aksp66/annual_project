@@ -1,0 +1,64 @@
+# Diffusion (DDPM) from scratch vs. GAN
+
+Projet annuel — cours *Projets AI & Big Data* (TCHAYE-KONDI Jude, Ph.D.), Master.
+
+Implémentation from scratch d'un modèle de diffusion débruitant (DDPM) et comparaison rigoureuse à un GAN (DCGAN) entraîné sur le même dataset et un budget de calcul comparable : qualité de génération, diversité des échantillons, stabilité d'entraînement, coût de calcul.
+
+## Équipe
+
+|Nom|Rôle|
+|---|---|
+|*à compléter*|Data / Experiment Engineer|
+|*à compléter*|Model / Research Engineer|
+|*à compléter*|Reporting / Backend Developer|
+
+## Sujet
+
+- Processus de diffusion direct (bruitage) et inverse (débruitage appris par un petit U-Net), implémenté from scratch.
+- DCGAN entraîné sur le même dataset, budget comparable.
+- Étude d'ablation : nombre de pas de diffusion (ex. 100 vs 1000) — effet sur qualité vs temps de génération.
+- Comparaison chiffrée DDPM vs GAN (FID ou évaluation qualitative structurée, diversité des échantillons).
+- Analyse de la stabilité d'entraînement (GAN vs DDPM).
+
+Détails complets du sujet : [`project/projets_master.md`](project/projets_master.md) (sujet n°3).
+
+## Structure du repo
+
+```text
+.
+├── src/                # code source (data, models/ddpm, models/gan, training, evaluation, utils)
+├── data/                # données (non versionnées) : raw/, processed/
+├── notebooks/           # EDA, prototypage
+├── configs/             # une config YAML par expérience (base de l'étude d'ablation)
+├── experiments/         # sorties d'entraînement (non versionnées) : checkpoints, logs, échantillons
+├── app/                 # démo : api/ (FastAPI) + web/ (Streamlit)
+├── docker/              # conteneurisation
+├── reports/             # rapport final (style article scientifique)
+├── scripts/             # scripts de reproduction des résultats
+├── tests/               # tests unitaires
+├── project/             # documents de cadrage du cours (slides, modalités)
+└── HISTORY.md           # journal chronologique du travail
+```
+
+Chaque dossier contient un `README.md` détaillant son contenu.
+
+## Installation
+
+```bash
+python -m venv .venv
+source .venv/bin/activate   # ou .venv\Scripts\activate sous Windows
+pip install -r requirements.txt
+```
+
+## Suivi du projet
+
+L'avancement (décisions, actions, résultats) est journalisé dans [`HISTORY.md`](HISTORY.md).
+
+## Livrables attendus
+
+- Rapport PDF (8-20 pages, style article scientifique) — envoyé à <tchaye59@gmail.com> avant la dernière séance.
+- Code reproductible (ce repo), README d'installation/exécution.
+- Application de démonstration (web).
+- Présentation (20 min).
+
+Voir [`project/projets_master.md`](project/projets_master.md) pour les modalités complètes.
