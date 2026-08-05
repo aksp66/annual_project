@@ -64,6 +64,15 @@ Journal chronologique des actions réalisées sur le projet. Une entrée par jou
 
 ---
 
+## 2026-08-04 — Équipe complète
+
+- **Rôles finalisés :** KOYE Leleda Ma Belle (`Mabelle95`) — Data / Experiment Engineer ; AHLI Kossi Sitsofe Pédro (`aksp66`) — Model / Research Engineer (principal), appui Backend ; KONTEVI Akossiwa Anne (`anne952`) — Reporting / Backend Developer.
+- Tableau Équipe du `Readme.md` complété avec les identifiants GitHub.
+- Table "Responsabilités par dossier" de `CONTRIBUTING.md` mise à jour avec les noms.
+- Ajout de `.github/CODEOWNERS` : demande automatique de review au bon responsable par dossier sur chaque PR, reflète la table de `CONTRIBUTING.md`.
+
+---
+
 ## 2026-08-04 — Branche personnelle `aaksp`
 
 - Création et push de la branche `aaksp`, espace de travail personnel pour AHLI Kossi Sitsofe Pédro (rôle Model), en dehors de la convention `model/`, `data/`... de `CONTRIBUTING.md`.
