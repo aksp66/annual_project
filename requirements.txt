@@ -2,6 +2,7 @@
 torch
 torchvision
 torchmetrics
+torch-fidelity   # requis par torchmetrics.image.fid.FrechetInceptionDistance
 
 # Data / calcul scientifique
 numpy
