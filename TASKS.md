@@ -92,11 +92,11 @@ Décompose chaque fonctionnalité de [`PLANNING.md`](PLANNING.md) en actions con
 - [x] Tester l'API manuellement (ou tests automatisés légers)
 
 ### Application web (Streamlit)
-- [ ] Sélecteur de modèle (DDPM / GAN)
-- [ ] Bouton de génération + affichage de l'image
-- [ ] Affichage côte à côte DDPM vs GAN
-- [ ] Affichage indicatif des métriques (FID, temps de génération)
-- [ ] Appel à l'API (`requests`)
+- [x] Sélecteur de modèle (DDPM / GAN)
+- [x] Bouton de génération + affichage de l'image
+- [x] Affichage côte à côte DDPM vs GAN
+- [x] Affichage indicatif des métriques (FID, temps de génération)
+- [x] Appel à l'API (`requests`)
 
 ### Docker
 - [ ] Dockerfile pour l'API

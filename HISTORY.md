@@ -325,3 +325,16 @@ Travail réalisé sur la branche `aaksp` (non mergé sur `master`), checklist "A
 - Ajout de `httpx` à `requirements.txt` (requis par `TestClient`).
 - Checklist "API (FastAPI)" de `TASKS.md` cochée intégralement.
 - **Prochaine étape :** application Streamlit (`app/web/`) consommant cette API, puis Docker.
+
+---
+
+## 2026-08-04 — Application Streamlit (Phase 3, appui Backend)
+
+Travail réalisé sur la branche `aaksp` (non mergé sur `master`), checklist "Application web (Streamlit)" de `TASKS.md`.
+
+- Ajout de `app/web/app.py` : sélecteur de modèle (`DDPM` / `GAN` / `Comparaison côte à côte`), slider du nombre d'images (plafonné par modèle, cohérent avec les limites de l'API), bouton "Générer" appelant `GET /generate` de l'API (`requests`), affichage des images décodées (base64 → PNG), et un bloc de métriques indicatives par génération : FID de référence (114.12 DDPM / 173.47 GAN, mesurés dans `notebooks/06_evaluation_ddpm_vs_gan.ipynb`) + temps de génération mesuré en direct sur la requête en cours.
+- `API_URL` configurable par variable d'environnement (`http://localhost:8000` par défaut) — préparation pour Docker (services séparés `api`/`web`).
+- Ajout de `requests` à `requirements.txt`.
+- **Test réalisé** : API (`uvicorn`) et app (`streamlit run --server.headless true`) lancées ensemble ; la page se charge sans exception (HTTP 200, logs Streamlit propres). **Limite** : pas d'outil de navigation/clic automatisé disponible dans cet environnement pour simuler un clic sur "Générer" en conditions réelles — le contrat d'API sous-jacent (`GET /generate`) est déjà couvert par les 6 tests automatisés de `tests/test_api.py` et par un test manuel `curl` réussi (entrée précédente), donc le risque résiduel est faible mais non nul (ex. rendu Streamlit lui-même).
+- Checklist "Application web (Streamlit)" de `TASKS.md` cochée intégralement (avec la réserve de test ci-dessus).
+- **Prochaine étape :** Docker (Dockerfiles api/app + `docker-compose.yml`).
