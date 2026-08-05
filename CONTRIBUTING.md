@@ -21,15 +21,15 @@ GitHub ne permet pas de restreindre l'accès à un sous-dossier au sein d'un mê
 
 |Dossier|Responsable principal|Rôle|
 |---|---|---|
-|`data/`, `src/data/`, `notebooks/` (EDA)|Data / Experiment Engineer|Collecte, prétraitement, exploration des données|
-|`src/models/ddpm/`, `src/models/gan/`, `src/training/`, `experiments/`|Model / Research Engineer|Architectures, entraînement, résultats bruts|
-|`src/evaluation/`, `configs/`|Model / Research Engineer (avec Data Engineer)|Métriques, étude d'ablation, définition des expériences|
-|`app/`, `docker/`|Reporting / Backend Developer|API, interface de démo, conteneurisation|
-|`reports/`|Reporting / Backend Developer|Rédaction du rapport (contenu alimenté par toute l'équipe)|
+|`data/`, `src/data/`, `notebooks/` (EDA)|KOYE Leleda Ma Belle (`Mabelle95`) — Data / Experiment Engineer|Collecte, prétraitement, exploration des données|
+|`src/models/ddpm/`, `src/models/gan/`, `src/training/`, `experiments/`|AHLI Kossi Sitsofe Pédro (`aksp66`) — Model / Research Engineer|Architectures, entraînement, résultats bruts|
+|`src/evaluation/`, `configs/`|`aksp66` (avec `Mabelle95`)|Métriques, étude d'ablation, définition des expériences|
+|`app/`, `docker/`|KONTEVI Akossiwa Anne (`anne952`) — Reporting / Backend Developer|API, interface de démo, conteneurisation|
+|`reports/`|`anne952`|Rédaction du rapport (contenu alimenté par toute l'équipe)|
 |`scripts/`, `src/utils/`, `tests/`|Transverse|Reproductibilité, code partagé — pas de propriétaire unique|
 |`project/`, `Readme.md`, `HISTORY.md`, `CONTRIBUTING.md`|Transverse|Documentation du projet, à jour par tous|
 
-Une fois les noms/identifiants GitHub de l'équipe connus (cf. tableau "Équipe" du `Readme.md`), on pourra ajouter un fichier `CODEOWNERS` pour que GitHub demande automatiquement la review du bon responsable sur chaque PR.
+Un fichier [`.github/CODEOWNERS`](.github/CODEOWNERS) reprend cette table pour que GitHub demande automatiquement la review du bon responsable sur chaque PR.
 
 **Règle de review :** le·la responsable d'un dossier ne relit jamais sa propre PR. Comme l'équipe compte 3 personnes, quand l'auteur·e est justement responsable du domaine touché, la review revient à l'un·e des deux autres membres (peu importe lequel·le — pas de binôme fixe nécessaire à cette taille d'équipe).
 

@@ -1,0 +1,31 @@
+# Reflete le tableau "Responsabilites par dossier" de CONTRIBUTING.md.
+# Indicatif : GitHub ne restreint pas l'ecriture par dossier, ceci ne fait
+# que demander automatiquement la review du bon responsable sur les PR.
+# La derniere regle qui correspond a un fichier gagne (ordre = general -> specifique).
+
+# Data / Experiment Engineer — KOYE Leleda Ma Belle
+/data/ @Mabelle95
+/src/data/ @Mabelle95
+/notebooks/ @Mabelle95
+
+# Model / Research Engineer — AHLI Kossi Sitsofe Pédro
+/src/models/ @aksp66
+/src/training/ @aksp66
+/experiments/ @aksp66
+/src/evaluation/ @aksp66 @Mabelle95
+/configs/ @aksp66 @Mabelle95
+
+# Reporting / Backend Developer — KONTEVI Akossiwa Anne
+/app/ @anne952
+/docker/ @anne952
+/reports/ @anne952
+
+# Transverse — reproductibilite, tests, documentation partagee
+/scripts/ @aksp66 @Mabelle95 @anne952
+/src/utils/ @aksp66 @Mabelle95 @anne952
+/tests/ @aksp66 @Mabelle95 @anne952
+/Readme.md @aksp66 @Mabelle95 @anne952
+/HISTORY.md @aksp66 @Mabelle95 @anne952
+/CONTRIBUTING.md @aksp66 @Mabelle95 @anne952
+/PLANNING.md @aksp66 @Mabelle95 @anne952
+/TASKS.md @aksp66 @Mabelle95 @anne952
