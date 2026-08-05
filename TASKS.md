@@ -31,9 +31,9 @@ Décompose chaque fonctionnalité de [`PLANNING.md`](PLANNING.md) en actions con
 - [x] Test unitaire : shape et plage de valeurs en sortie du DataLoader
 
 ### Scripts de reproductibilité
-- [ ] Script de téléchargement/préparation automatique du dataset (`scripts/`)
-- [ ] Script générique pour lancer un entraînement à partir d'une config (`scripts/train.py --config ...`)
-- [ ] Vérifier qu'un même seed + config reproduit les mêmes résultats
+- [x] Script de téléchargement/préparation automatique du dataset (`scripts/`)
+- [x] Script générique pour lancer un entraînement à partir d'une config (`scripts/train.py --config ...`)
+- [x] Vérifier qu'un même seed + config reproduit les mêmes résultats
 
 ---
 

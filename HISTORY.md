@@ -297,3 +297,16 @@ Travail réalisé sur la branche `aaksp` (non mergé sur `master`), rôle Model,
 - **Limite non traitée** (à noter en Discussion/Limites du rapport) : la comparaison de stabilité GAN vs DDPM sur **plusieurs seeds** n'a pas été réalisée (budget CPU déjà très sollicité sur cette session — chaque run baseline supplémentaire coûterait ~1-2h) ; la conclusion de stabilité repose ici sur un seul seed (42) par modèle, cf. entrées précédentes (courbes de loss G/D, D(real)/D(fake)).
 - Checklist `TASKS.md` : FID, diversité et temps de génération cochés ; stabilité multi-seeds laissée non cochée (limite documentée ci-dessus).
 - **Prochaine étape :** rédaction continue du rapport (sections Données + Méthode, rôle Backend) et comparaison finale chiffrée pour la Phase 4.
+
+---
+
+## 2026-08-04 — Scripts de reproductibilité (rôle Data)
+
+Travail réalisé sur la branche `aaksp` (non mergé sur `master`), checklist "Scripts de reproductibilité" de `TASKS.md` (rôle Data, mais complétée pour clore les fondations avant la suite du planning).
+
+- Ajout de `scripts/prepare_data.py` : télécharge/prépare Fashion-MNIST à partir d'une config (`configs/data.yaml`), affiche tailles des splits et vérifie shape/plage de valeurs d'un batch — automatise ce qui était fait manuellement dans `scripts/compare_datasets.py`.
+- Ajout de `scripts/train.py --config <path>` : point d'entrée générique qui détecte automatiquement le type de config (`timesteps` → DDPM, `model.latent_dim` → GAN) et délègue à `src.training.train_ddpm`/`train_gan` — satisfait la convention `scripts/train.py --config ...` de `TASKS.md`, en plus des invocations directes déjà utilisées (`python -m src.training.train_ddpm ...`).
+- Ajout de `tests/test_reproducibility.py` : lance deux entraînements DDPM identiques (config minuscule dédiée au test — `timesteps=5`, petit U-Net, 3 steps — pour rester rapide) avec le même seed, et vérifie que la séquence de loss produite est strictement identique entre les deux runs. **Confirme la reproductibilité du pipeline** (seed fixé via `set_seed`, chargement de données déterministe, pas de source d'aléa non contrôlée).
+- Suite de tests complète : 26 tests passants (5 nouveaux fichiers de tests cumulés depuis le début : data, diffusion, gan, metrics, reproducibility, unet).
+- Checklist "Scripts de reproductibilité" de `TASKS.md` cochée intégralement — clôture les fondations Data/Model de la Phase 2.
+- **Prochaine étape :** rédaction du rapport (`reports/`, rôle Backend) ou démarrage de la Phase 3 (API/App/Docker), selon priorité.
