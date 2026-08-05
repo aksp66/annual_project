@@ -74,9 +74,9 @@ Décompose chaque fonctionnalité de [`PLANNING.md`](PLANNING.md) en actions con
 - [x] Rédiger le tableau comparatif (base de la section "Étude d'ablation" du rapport)
 
 ### Évaluation et comparaison DDPM vs GAN
-- [ ] Implémenter/adapter le calcul du FID (`torchmetrics` ou implémentation simplifiée)
-- [ ] Mesurer la diversité des échantillons générés (variance intra-batch, doublons visuels)
-- [ ] Chronométrer le temps de génération (DDPM multi-pas vs GAN one-shot)
+- [x] Implémenter/adapter le calcul du FID (`torchmetrics` ou implémentation simplifiée)
+- [x] Mesurer la diversité des échantillons générés (variance intra-batch, doublons visuels)
+- [x] Chronométrer le temps de génération (DDPM multi-pas vs GAN one-shot)
 - [ ] Documenter la stabilité d'entraînement du GAN sur plusieurs seeds (oscillations, mode collapse) vs celle du DDPM
 
 ---

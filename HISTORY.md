@@ -261,3 +261,30 @@ Travail réalisé sur la branche `aaksp` (non mergé sur `master`), rôle Model.
 - **Conclusion pour le rapport** : sur ce budget de calcul CPU contraint, `T=400` offre le meilleur compromis qualité/coût de génération parmi les 3 valeurs testées ; `T=1000` (choix standard Ho et al. 2020, utilisé pour la baseline) reste préférable seulement si le budget d'entraînement est suffisant pour l'exploiter pleinement.
 - Checklist "Étude d'ablation (nombre de pas de diffusion)" de `TASKS.md` cochée intégralement.
 - **Prochaine étape :** rôle Model — métriques (FID ou évaluation qualitative structurée) et comparaison finale chiffrée DDPM vs GAN.
+
+---
+
+## 2026-08-04 — Comparaison chiffrée DDPM vs GAN (FID, diversité, temps de génération)
+
+Travail réalisé sur la branche `aaksp` (non mergé sur `master`), rôle Model, checklist "Évaluation et comparaison DDPM vs GAN" de `TASKS.md`.
+
+- Ajout de `src/evaluation/metrics.py` : `compute_fid()` (FID via `torchmetrics.image.fid.FrechetInceptionDistance`, feature=2048/InceptionV3, conversion [-1,1]/1 canal → [0,1]/3 canaux), `pixel_variance()` (variance intra-batch, proxy de diversité) et `count_near_duplicate_pairs()` (détection de quasi-doublons par distance euclidienne normalisée). Ajout de `torch-fidelity` à `requirements.txt` (dépendance requise par `FrechetInceptionDistance`, poids InceptionV3 ~91 Mo téléchargés une fois).
+- Ajout de `tests/test_metrics.py` (6 tests, tous passants) : shape/plage de `to_fid_input`, variance nulle/positive selon les images, détection correcte des doublons stricts, FID positif et fini sur deux tirages de la même distribution.
+- Ajout de `notebooks/06_evaluation_ddpm_vs_gan.ipynb` (exécuté de bout en bout, ~31 min) : charge les checkpoints baseline (`ddpm_step001000.pt`, `gan_step001000.pt`), génère 100 images par modèle (taille du jeu limitée par le budget CPU), calcule FID vs 100 images réelles du test set, diversité, temps de génération.
+
+**Résultats mesurés (protocole identique, 100 images/groupe) :**
+
+|Métrique|DDPM|GAN|
+|---|---|---|
+|Temps de génération (100 img)|1854.0 s (18.54 s/image)|0.09 s (0.0009 s/image)|
+|**Ratio temps de génération**|DDPM ~21600x plus lent que le GAN (génération one-shot vs 1000 pas séquentiels)||
+|FID (vs réel)|**114.12**|173.47|
+|Variance intra-batch|0.2443|0.2292 (réel : 0.2840)|
+|Quasi-doublons (100 img, seuil 0.05)|0|0|
+
+- **FID** : le DDPM baseline obtient un score nettement meilleur (114 vs 173) que le GAN baseline sur ce protocole — cohérent avec l'observation qualitative des runs précédents (échantillons DDPM plus nets à step 1000, GAN affecté par des artefacts en damier). **À nuancer** : calculé sur seulement 100 images/groupe (la littérature recommande plusieurs milliers pour un FID stable) — valable comme comparaison relative DDPM vs GAN sur un protocole identique, pas comme score absolu comparable à la littérature.
+- **Diversité** : aucun quasi-doublon détecté pour les deux modèles ; variance intra-batch légèrement inférieure à celle des images réelles pour les deux (attendu, léger mode-seeking), le DDPM restant plus proche de la variance réelle que le GAN — pas de mode collapse sévère confirmé pour le GAN, cohérent avec l'entraînement baseline.
+- **Temps de génération** : confirme structurellement le compromis DDPM (multi-pas, coûteux) vs GAN (one-shot, quasi instantané) — à mettre en regard de l'étude d'ablation (`T` plus faible réduit fortement ce coût, cf. entrée précédente).
+- **Limite non traitée** (à noter en Discussion/Limites du rapport) : la comparaison de stabilité GAN vs DDPM sur **plusieurs seeds** n'a pas été réalisée (budget CPU déjà très sollicité sur cette session — chaque run baseline supplémentaire coûterait ~1-2h) ; la conclusion de stabilité repose ici sur un seul seed (42) par modèle, cf. entrées précédentes (courbes de loss G/D, D(real)/D(fake)).
+- Checklist `TASKS.md` : FID, diversité et temps de génération cochés ; stabilité multi-seeds laissée non cochée (limite documentée ci-dessus).
+- **Prochaine étape :** rédaction continue du rapport (sections Données + Méthode, rôle Backend) et comparaison finale chiffrée pour la Phase 4.
