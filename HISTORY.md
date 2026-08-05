@@ -237,3 +237,27 @@ Travail réalisé sur la branche `aaksp` (non mergé sur `master`), rôle Model,
   - Budget d'entraînement réduit à `num_steps: 500` (vs 1000 pour la baseline) pour que les 3 runs d'ablation tiennent dans un temps de calcul CPU raisonnable (~3h estimées pour les 3 runs cumulés).
 - **Les 3 entraînements sont lancés séquentiellement en arrière-plan** ; résultats (temps d'entraînement/génération par config, qualité visuelle comparée) à consigner dans une prochaine entrée une fois terminés.
 - Checklist `TASKS.md` : "définir les configs" et "lancer chaque config" cochées ; mesure/comparaison/tableau en attente des résultats.
+
+---
+
+## 2026-08-04 — Résultats de l'étude d'ablation (nombre de pas de diffusion)
+
+Travail réalisé sur la branche `aaksp` (non mergé sur `master`), rôle Model. Suite de l'entrée précédente.
+
+**Incident** : le run `T=100` s'est terminé normalement, mais l'exécution en arrière-plan des runs `T=400`/`T=1000` a été interrompue en cours de route (redémarrage de l'environnement de session, pas une erreur du code — `T=400` s'était arrêté au step 50/500 sans checkpoint sauvegardé). Les deux runs manquants ont été relancés depuis le début sans perte pour `T=100` (déjà complet et sauvegardé).
+
+**Résultats finaux** (`summary.json` par config, budget d'entraînement identique = 500 steps) :
+
+|T (pas de diffusion)|Temps entraînement|Temps génération (8 img)|Loss finale (moy. 20 derniers)|
+|---|---|---|---|
+|100|3295.7 s|13.4 s|0.1107|
+|400|3667.6 s|52.0 s|0.0648|
+|1000|3798.8 s|129.0 s|0.0404|
+
+- Ajout de `notebooks/05_ablation_diffusion_steps.ipynb` (exécuté de bout en bout) : tableau comparatif, courbes de loss superposées, comparaison visuelle des échantillons finaux (`step_000500.png` des 3 configs), graphiques temps de génération / loss finale vs `T`.
+- **Temps de génération** : quasi linéaire en `T` (ratio mesuré ≈ 1 / 3.9 / 9.6, proche du ratio théorique 1/4/10) — confirme le compromis attendu qualité vs coût de génération du DDPM multi-pas.
+- **Loss finale** : décroît avec `T` (0.111 → 0.065 → 0.040) — attendu mécaniquement (pas de bruit plus petits à `T` élevé), **pas directement une mesure de qualité perceptuelle**.
+- **Qualité visuelle** (résultat le plus intéressant, contre-intuitif) : à budget d'entraînement égal (500 steps), **`T=400` produit les échantillons les plus nets** (silhouettes de vêtements reconnaissables) ; `T=100` reste bruité (pas assez de pas pour affiner) ; **`T=1000` est visuellement moins net que `T=400`** malgré sa loss plus basse — avec 500 steps de gradient répartis sur 1000 valeurs de `t` possibles, chaque `t` est en moyenne moins souvent vu qu'avec `T` plus petit, donc le modèle est comparativement sous-entraîné à `T` élevé. Cohérent avec le run baseline (`configs/ddpm_base.yaml`, `T=1000` mais **1000** steps d'entraînement) qui produisait des échantillons nettement plus nets — **le nombre de steps d'entraînement nécessaire semble croître avec `T`**, point à developper en Discussion du rapport.
+- **Conclusion pour le rapport** : sur ce budget de calcul CPU contraint, `T=400` offre le meilleur compromis qualité/coût de génération parmi les 3 valeurs testées ; `T=1000` (choix standard Ho et al. 2020, utilisé pour la baseline) reste préférable seulement si le budget d'entraînement est suffisant pour l'exploiter pleinement.
+- Checklist "Étude d'ablation (nombre de pas de diffusion)" de `TASKS.md` cochée intégralement.
+- **Prochaine étape :** rôle Model — métriques (FID ou évaluation qualitative structurée) et comparaison finale chiffrée DDPM vs GAN.

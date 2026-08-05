@@ -69,9 +69,9 @@ Décompose chaque fonctionnalité de [`PLANNING.md`](PLANNING.md) en actions con
 ### Étude d'ablation (nombre de pas de diffusion)
 - [x] Définir ≥3 configs (ex. 100 / 400 / 1000 pas) dans `configs/`
 - [x] Lancer chaque config avec le même seed/dataset
-- [ ] Mesurer temps d'entraînement et temps de génération par config
-- [ ] Comparer la qualité (visuelle et/ou FID) par config
-- [ ] Rédiger le tableau comparatif (base de la section "Étude d'ablation" du rapport)
+- [x] Mesurer temps d'entraînement et temps de génération par config
+- [x] Comparer la qualité (visuelle et/ou FID) par config
+- [x] Rédiger le tableau comparatif (base de la section "Étude d'ablation" du rapport)
 
 ### Évaluation et comparaison DDPM vs GAN
 - [ ] Implémenter/adapter le calcul du FID (`torchmetrics` ou implémentation simplifiée)
