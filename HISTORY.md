@@ -310,3 +310,18 @@ Travail réalisé sur la branche `aaksp` (non mergé sur `master`), checklist "S
 - Suite de tests complète : 26 tests passants (5 nouveaux fichiers de tests cumulés depuis le début : data, diffusion, gan, metrics, reproducibility, unet).
 - Checklist "Scripts de reproductibilité" de `TASKS.md` cochée intégralement — clôture les fondations Data/Model de la Phase 2.
 - **Prochaine étape :** rédaction du rapport (`reports/`, rôle Backend) ou démarrage de la Phase 3 (API/App/Docker), selon priorité.
+
+---
+
+## 2026-08-04 — API FastAPI (Phase 3, appui Backend)
+
+Travail réalisé sur la branche `aaksp` (non mergé sur `master`), checklist "API (FastAPI)" de `TASKS.md`, en appui du rôle Backend (cf. positionnement de rôle du 2026-08-04).
+
+- Ajout de `app/api/main.py` : charge les checkpoints DDPM (`experiments/ddpm_baseline/checkpoints/ddpm_step001000.pt`) et GAN (`experiments/gan_baseline/checkpoints/gan_step001000.pt`) une fois au démarrage (`lifespan` FastAPI), avec repli silencieux si un checkpoint est absent (`models` ne contient alors pas la clé correspondante).
+  - `GET /health` : statut + liste des modèles effectivement chargés.
+  - `GET /generate?model=ddpm|gan&n=...` : génère `n` images, retourne un JSON `{model, n, images: [base64 PNG, ...]}`. Validation du paramètre `model` via `Literal["ddpm","gan"]` (→ 422 automatique si invalide) ; `n` plafonné (`MAX_N_DDPM=4`, `MAX_N_GAN=16` — la génération DDPM coûte ~18s/image en CPU, cf. entrée d'évaluation précédente) → 400 si dépassé ; 503 si le modèle demandé n'est pas chargé.
+- Ajout de `tests/test_api.py` (6 tests, tous passants, `fastapi.testclient.TestClient`) : `/health`, génération GAN (PNG valide décodé), paramètre `model` invalide → 422, `n` trop grand → 400 (DDPM et GAN), génération DDPM réelle (1 image, ~18s, confirme le chemin complet checkpoint → sampling → PNG).
+- Test manuel du serveur réel (`uvicorn app.api.main:app`) : `/generate?model=gan` et validation d'erreur confirmés en conditions réelles (logs uvicorn).
+- Ajout de `httpx` à `requirements.txt` (requis par `TestClient`).
+- Checklist "API (FastAPI)" de `TASKS.md` cochée intégralement.
+- **Prochaine étape :** application Streamlit (`app/web/`) consommant cette API, puis Docker.

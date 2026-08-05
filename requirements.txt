@@ -26,3 +26,4 @@ jupyter
 
 # Tests
 pytest
+httpx   # requis par fastapi.testclient.TestClient

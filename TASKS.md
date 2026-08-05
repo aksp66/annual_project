@@ -84,12 +84,12 @@ Décompose chaque fonctionnalité de [`PLANNING.md`](PLANNING.md) en actions con
 ## Reporting / Backend Developer
 
 ### API (FastAPI)
-- [ ] Charger les deux modèles (DDPM, GAN) une fois au démarrage
-- [ ] Endpoint(s) de génération (ex. `/generate?model=ddpm|gan`)
-- [ ] Validation des entrées (Pydantic), codes HTTP appropriés
-- [ ] Retour JSON (image encodée base64 ou chemin)
-- [ ] Gestion des erreurs (modèle non chargé, paramètre invalide)
-- [ ] Tester l'API manuellement (ou tests automatisés légers)
+- [x] Charger les deux modèles (DDPM, GAN) une fois au démarrage
+- [x] Endpoint(s) de génération (ex. `/generate?model=ddpm|gan`)
+- [x] Validation des entrées (Pydantic), codes HTTP appropriés
+- [x] Retour JSON (image encodée base64 ou chemin)
+- [x] Gestion des erreurs (modèle non chargé, paramètre invalide)
+- [x] Tester l'API manuellement (ou tests automatisés légers)
 
 ### Application web (Streamlit)
 - [ ] Sélecteur de modèle (DDPM / GAN)
