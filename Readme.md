@@ -50,6 +50,21 @@ source .venv/bin/activate   # ou .venv\Scripts\activate sous Windows
 pip install -r requirements.txt
 ```
 
+## Démo (API + app)
+
+```bash
+docker compose up --build
+```
+
+|Service|Port|Variable d'environnement|
+|---|---|---|
+|`api` (FastAPI)|[localhost:8000](http://localhost:8000) (`/health`, `/generate?model=ddpm\|gan&n=...`)|—|
+|`web` (Streamlit)|[localhost:8501](http://localhost:8501)|`API_URL` (défaut : `http://localhost:8000`, réglé sur `http://api:8000` dans `docker-compose.yml`)|
+
+Les checkpoints entraînés (`experiments/*_baseline/checkpoints/`, non versionnés — voir `.gitignore`) sont montés en volume dans le conteneur `api` : il faut donc avoir entraîné au moins une fois les modèles baseline en local avant de lancer la démo (`python scripts/train.py --config configs/ddpm_base.yaml`, puis `configs/gan_base.yaml`). Sans checkpoint, l'API démarre quand même mais renvoie une erreur 503 sur l'endpoint concerné.
+
+Sans Docker : `uvicorn app.api.main:app --port 8000` puis `API_URL=http://localhost:8000 streamlit run app/web/app.py`.
+
 ## Planning
 
 Découpage du travail par phase, tâche, rôle et durée estimée : voir [`PLANNING.md`](PLANNING.md).

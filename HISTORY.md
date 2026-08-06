@@ -338,3 +338,18 @@ Travail réalisé sur la branche `aaksp` (non mergé sur `master`), checklist "A
 - **Test réalisé** : API (`uvicorn`) et app (`streamlit run --server.headless true`) lancées ensemble ; la page se charge sans exception (HTTP 200, logs Streamlit propres). **Limite** : pas d'outil de navigation/clic automatisé disponible dans cet environnement pour simuler un clic sur "Générer" en conditions réelles — le contrat d'API sous-jacent (`GET /generate`) est déjà couvert par les 6 tests automatisés de `tests/test_api.py` et par un test manuel `curl` réussi (entrée précédente), donc le risque résiduel est faible mais non nul (ex. rendu Streamlit lui-même).
 - Checklist "Application web (Streamlit)" de `TASKS.md` cochée intégralement (avec la réserve de test ci-dessus).
 - **Prochaine étape :** Docker (Dockerfiles api/app + `docker-compose.yml`).
+
+---
+
+## 2026-08-05 — Conteneurisation (Docker), fin de la Phase 3
+
+Travail réalisé sur la branche `aaksp` (non mergé sur `master`), checklist "Docker" de `TASKS.md`.
+
+- Ajout de `docker/api.Dockerfile` et `docker/web.Dockerfile` (`python:3.11-slim`, choix délibéré plutôt que la version 3.14 de la machine de dev — meilleure disponibilité des wheels pour tout `requirements.txt`, cf. décision dataset/venv). `PYTHONPATH=/app` sur l'image API pour que `from src... import ...` résolve correctement dans le conteneur.
+- Ajout de `docker-compose.yml` (racine du repo) : services `api` (port 8000) et `web` (port 8501, `API_URL=http://api:8000` pour la résolution DNS interne Docker Compose), `web` dépend de `api`.
+- **Checkpoints entraînés montés en volume** (`./experiments:/app/experiments:ro`) plutôt que copiés dans l'image : ils ne sont pas versionnés (cf. `.gitignore`), trop volumineux, et un montage évite de reconstruire l'image à chaque nouvel entraînement.
+- Ajout de `.dockerignore` (`.venv/`, `data/`, `experiments/`, `notebooks/`, etc.) pour accélérer l'envoi du contexte de build.
+- **Test de bout en bout réalisé** (`docker compose build` puis `docker compose up -d`) : images construites (9.23 Go chacune, disque ; 3.12 Go de contenu — `requirements.txt` complet non allégé pour Docker, simplification assumée vu l'exigence allégée niveau Master, cf. `app/README.md`) ; `GET /health` du conteneur `api` confirme les 2 modèles chargés (checkpoints lus depuis le volume) ; `GET /generate?model=gan&n=1` renvoie un PNG valide depuis le conteneur ; page Streamlit du conteneur `web` répond HTTP 200 ; **connectivité réseau interne `web` → `api` vérifiée** (`docker exec` dans le conteneur `web`, requête vers `http://api:8000/health` réussie) — confirme que la résolution DNS Docker Compose fonctionne, donc que le bouton "Générer" de l'app fonctionnera en conditions réelles. Conteneurs arrêtés/supprimés après test (`docker compose down`).
+- `Readme.md` mis à jour : section "Démo (API + app)" avec commande `docker compose up --build`, tableau ports/variables d'environnement, note sur la nécessité d'avoir entraîné les baselines localement au préalable (503 sinon), alternative sans Docker.
+- Checklist "Docker" de `TASKS.md` cochée intégralement — **clôture la Phase 3** (API + App + Docker) de `PLANNING.md`.
+- **Prochaine étape :** rédaction du rapport (`reports/`) et/ou Phase 4 (comparaison finale, relecture, reproductibilité `docker compose up --build`).

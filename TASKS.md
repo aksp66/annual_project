@@ -99,11 +99,11 @@ Décompose chaque fonctionnalité de [`PLANNING.md`](PLANNING.md) en actions con
 - [x] Appel à l'API (`requests`)
 
 ### Docker
-- [ ] Dockerfile pour l'API
-- [ ] Dockerfile pour l'app web
-- [ ] `docker-compose.yml` orchestrant les deux services
-- [ ] Vérifier que `docker compose up --build` fonctionne de bout en bout
-- [ ] Documenter ports/variables d'environnement dans `Readme.md`
+- [x] Dockerfile pour l'API
+- [x] Dockerfile pour l'app web
+- [x] `docker-compose.yml` orchestrant les deux services
+- [x] Vérifier que `docker compose up --build` fonctionne de bout en bout
+- [x] Documenter ports/variables d'environnement dans `Readme.md`
 
 ### Rapport (style article scientifique)
 - [ ] Introduction (contexte, problématique, contribution)
