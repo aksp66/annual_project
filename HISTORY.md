@@ -373,3 +373,19 @@ Travail réalisé sur la branche `aaksp` (non mergé sur `master`), checklist "R
 - Vérification programmatique post-génération (relecture du XML du `.docx`) : police/taille/couleur correctes sur le style `Normal`, les titres, les cellules de tableaux, et le style `Hyperlink` ; champ TOC et `updateFields` présents. Pas d'outil de rendu PDF/Word disponible dans cet environnement pour une vérification visuelle complète (LibreOffice absent) — **à relire visuellement dans Word avant envoi final**.
 - Checklist "Rapport" de `TASKS.md` : toutes les sections de contenu cochées ; "Répartition du travail" et "Mise en page finale" laissées en attente (nécessitent les apports des autres membres et une relecture finale).
 - **Prochaine étape :** relecture visuelle dans Word, intégration des contributions Data/Backend des autres membres, puis présentation (slides + démo).
+
+---
+
+## 2026-08-06 — Vérification et correction des README de sous-dossiers
+
+Travail réalisé sur la branche `aaksp` (non mergé sur `master`). Comparaison systématique des 9 `README.md` de sous-dossiers (hors `.pytest_cache/README.md`, généré par pytest) au contenu réel de leur dossier.
+
+- **Inexactitudes corrigées :**
+  - `docker/README.md` : indiquait encore "à remplir une fois l'API et l'application développées" — corrigé pour refléter que Dockerfiles + `docker-compose.yml` sont faits et testés (renvoi vers l'entrée du 2026-08-05).
+  - `scripts/README.md` : annonçait que `scripts/` contenait le "calcul du FID" — en réalité dans `src/evaluation/metrics.py`, utilisé depuis un notebook. README corrigé pour lister précisément les 3 scripts réels (`prepare_data.py`, `train.py`, `compare_datasets.py`) et clarifier où se trouve le FID.
+  - `data/README.md` : décrivait `processed/` comme contenant des données prétraitées prêtes à l'entraînement — en réalité ce dossier reste vide, le pipeline normalise à la volée dans le `DataLoader` sans rien écrire sur disque. Corrigé pour le dire explicitement.
+  - `configs/README.md` : exemple de commande référençant `configs/ddpm_steps100.yaml`, fichier inexistant (le vrai nom est `ddpm_ablation_steps100.yaml`). Corrigé avec les vrais noms de fichiers et `scripts/train.py`.
+  - `src/README.md` : mentionnait "Fashion-MNIST / CIFAR-10" pour `src/data/`, alors que le pipeline réel (`dataset.py`) ne charge que Fashion-MNIST (CIFAR-10 n'a servi qu'au script ponctuel de comparaison). Corrigé.
+- **Détails mineurs corrigés :** `notebooks/README.md` (exemple `02_diffusion_prototype.ipynb` → `02_diffusion_forward.ipynb`, ajout d'un exemple d'ablation) ; `tests/README.md` (ne listait que 3 des 7 fichiers de test existants — complété avec les 7).
+- **Vérifiés corrects, non modifiés :** `app/README.md`, `reports/README.md`.
+- **Prochaine étape :** relecture visuelle du rapport dans Word, intégration des contributions des autres membres, présentation.

@@ -2,7 +2,7 @@
 
 Code source du projet, organisé par responsabilité.
 
-- `data/` — chargement et prétraitement des datasets (Fashion-MNIST / CIFAR-10), transforms, dataloaders.
+- `data/` — chargement et prétraitement du dataset retenu (Fashion-MNIST, cf. `HISTORY.md` pour la comparaison à CIFAR-10), transforms, dataloaders.
 - `models/ddpm/` — U-Net de débruitage, processus de diffusion direct/inverse (from scratch).
 - `models/gan/` — générateur et discriminateur (DCGAN).
 - `training/` — boucles d'entraînement DDPM et GAN, gestion des seeds et des configs.
