@@ -25,6 +25,9 @@ requests
 # Notebooks
 jupyter
 
+# Rapport
+python-docx
+
 # Tests
 pytest
 httpx   # requis par fastapi.testclient.TestClient

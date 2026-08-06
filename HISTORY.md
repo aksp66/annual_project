@@ -353,3 +353,23 @@ Travail réalisé sur la branche `aaksp` (non mergé sur `master`), checklist "D
 - `Readme.md` mis à jour : section "Démo (API + app)" avec commande `docker compose up --build`, tableau ports/variables d'environnement, note sur la nécessité d'avoir entraîné les baselines localement au préalable (503 sinon), alternative sans Docker.
 - Checklist "Docker" de `TASKS.md` cochée intégralement — **clôture la Phase 3** (API + App + Docker) de `PLANNING.md`.
 - **Prochaine étape :** rédaction du rapport (`reports/`) et/ou Phase 4 (comparaison finale, relecture, reproductibilité `docker compose up --build`).
+
+---
+
+## 2026-08-06 — Premier jet du rapport (reports/rapport.docx)
+
+Travail réalisé sur la branche `aaksp` (non mergé sur `master`), checklist "Rapport (style article scientifique)" de `TASKS.md`.
+
+- Contraintes de mise en forme demandées : noir et blanc uniquement (aucune autre couleur), police Tahoma, taille normale 12, avec sommaire, table des matières et glossaire.
+- Ajout de `reports/generate_report.py` : génère `reports/rapport.docx` par script (`python-docx`), pour que le rapport reste reproductible/régénérable comme le reste du projet plutôt que rédigé à la main dans Word.
+  - Styles `Normal`/`Heading 1-3`/`Title` forcés en Tahoma, noir (`RGBColor(0,0,0)`), tailles 12/16/14/12/22pt (titre) — aucune couleur de thème Word par défaut.
+  - Style `Hyperlink` **déclaré explicitement** en noir sans soulignement : sans cela, Word aurait recréé ce style avec son bleu souligné par défaut dès la mise à jour du champ TOC, violant la contrainte N&B — bug détecté et corrigé pendant la génération (vérifié par relecture programmatique du docx après coup).
+  - Champ TOC Word natif (`add_toc_field`, niveaux 1-3) + `w:updateFields` activé dans `settings.xml` pour que la table des matières se peuple automatiquement à l'ouverture dans Word (à défaut, mise à jour manuelle clic droit).
+  - "Sommaire" (liste simple des sections) distinct de la "Table des matières" (champ Word détaillé, avec numéros de page), conformément à la demande.
+  - "Glossaire" : 18 termes définis (DDPM, GAN, DCGAN, U-Net, FID, timestep, seed, checkpoint, mode collapse, Docker/volume, etc.).
+- Figures extraites des notebooks et converties en niveaux de gris (`reports/figures/`, 8 images) pour respecter la contrainte N&B même sur les graphiques matplotlib (barres bleu/orange par défaut) : distribution des classes, échantillons Fashion-MNIST, bruitage progressif, échantillons DDPM/GAN baseline, comparaison ablation (temps/loss vs T, échantillons), comparaison réel/DDPM/GAN.
+- Contenu rédigé pour toutes les sections imposées (Introduction, Travaux liés, Données, Méthode, Étude d'ablation, Résultats, Déploiement, Discussion et limites, Répartition du travail, Références), à partir des chiffres et décisions déjà journalisés dans les entrées précédentes de ce fichier — 6 tableaux numérotés, 8 figures numérotées.
+- **Section "Répartition du travail" rédigée honnêtement** : à ce stade, l'ensemble du travail (Data, Model, Backend API/App/Docker) a été réalisé par AHLI Kossi Sitsofe Pédro sur `aaksp`, faute de contributions encore intégrées de `Mabelle95`/`anne952` — signalé explicitement plutôt que masqué, à corriger une fois leurs apports intégrés.
+- Vérification programmatique post-génération (relecture du XML du `.docx`) : police/taille/couleur correctes sur le style `Normal`, les titres, les cellules de tableaux, et le style `Hyperlink` ; champ TOC et `updateFields` présents. Pas d'outil de rendu PDF/Word disponible dans cet environnement pour une vérification visuelle complète (LibreOffice absent) — **à relire visuellement dans Word avant envoi final**.
+- Checklist "Rapport" de `TASKS.md` : toutes les sections de contenu cochées ; "Répartition du travail" et "Mise en page finale" laissées en attente (nécessitent les apports des autres membres et une relecture finale).
+- **Prochaine étape :** relecture visuelle dans Word, intégration des contributions Data/Backend des autres membres, puis présentation (slides + démo).

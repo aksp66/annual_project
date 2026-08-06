@@ -106,16 +106,16 @@ Décompose chaque fonctionnalité de [`PLANNING.md`](PLANNING.md) en actions con
 - [x] Documenter ports/variables d'environnement dans `Readme.md`
 
 ### Rapport (style article scientifique)
-- [ ] Introduction (contexte, problématique, contribution)
-- [ ] Travaux liés (synthèse des papiers de référence + apports Model)
-- [ ] Données (synthèse EDA + apports Data)
-- [ ] Méthode (description précise des modèles, hyperparamètres, protocole)
-- [ ] Étude d'ablation (tableau + discussion, apports Model)
-- [ ] Résultats (comparaison chiffrée, analyse critique)
-- [ ] Déploiement (API, app, Docker)
-- [ ] Discussion et limites
-- [ ] Répartition du travail (contributions précises de chaque membre)
-- [ ] Mise en page finale (8-20 pages, figures/tableaux numérotés)
+- [x] Introduction (contexte, problématique, contribution)
+- [x] Travaux liés (synthèse des papiers de référence + apports Model)
+- [x] Données (synthèse EDA + apports Data)
+- [x] Méthode (description précise des modèles, hyperparamètres, protocole)
+- [x] Étude d'ablation (tableau + discussion, apports Model)
+- [x] Résultats (comparaison chiffrée, analyse critique)
+- [x] Déploiement (API, app, Docker)
+- [x] Discussion et limites
+- [ ] Répartition du travail (contributions précises de chaque membre) — premier jet honnête rédigé, à mettre à jour une fois les apports de `Mabelle95`/`anne952` intégrés
+- [ ] Mise en page finale (8-20 pages, figures/tableaux numérotés) — figures/tableaux déjà numérotés, décompte de pages et relecture finale à faire
 
 ### Présentation
 - [ ] Construire les slides (contexte, méthode, ablation, résultats, démo)
