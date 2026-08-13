@@ -77,3 +77,14 @@ Journal chronologique des actions réalisées sur le projet. Une entrée par jou
 
 - Création et push de la branche `aaksp`, espace de travail personnel pour AHLI Kossi Sitsofe Pédro (rôle Model), en dehors de la convention `model/`, `data/`... de `CONTRIBUTING.md`.
 - Restriction d'accès en écriture (lui seul) **non appliquée automatiquement** : Git n'a pas de notion d'accès par branche, il faut une règle de protection GitHub (Settings → Branches → Restrict who can push to matching branches) — à configurer manuellement par le propriétaire du repo.
+
+---
+
+## 2026-08-13 — Choix du dataset : Fashion-MNIST
+
+**Décision (Data / Experiment Engineer) :** Fashion-MNIST retenu comme dataset principal pour le DDPM et le GAN.
+
+- Téléchargement et vérification (checksum torchvision) de Fashion-MNIST (60 000 train / 10 000 test, 28×28, niveaux de gris) et CIFAR-10 (50 000 train / 10 000 test, 32×32, RGB) via `scripts/download_and_eda.py`. Réseau local instable (coupures de connexion récurrentes) : ajout de `scripts/resumable_download.py`, téléchargeur avec reprise HTTP Range + retries, utilisé en secours pour finaliser le téléchargement des deux datasets.
+- EDA rapide : les deux datasets sont propres (pas de valeurs manquantes, classes strictement équilibrées à 10 classes), voir `reports/datasets_report.json` et échantillons visuels dans `reports/samples/`.
+- **Justification du choix :** budget de calcul du cours limité (~28h au total, ~5h dédiées au rôle Data) et nécessité d'entraîner DDPM + GAN + au moins 3 configurations d'ablation (nombre de pas de diffusion). Fashion-MNIST (niveaux de gris, 28×28, ~30 Mo) permet des temps d'entraînement nettement plus courts que CIFAR-10 (couleur, 32×32, 3 canaux, ~170 Mo), laissant plus de marge pour l'étude d'ablation et les itérations, sans perdre la capacité à observer une différence qualitative significative entre DDPM et GAN.
+- **Prochaine étape :** pipeline de chargement/prétraitement (`src/data/`), normalisation dans [-1, 1], config `configs/data.yaml`.
