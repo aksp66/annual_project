@@ -88,3 +88,13 @@ Journal chronologique des actions réalisées sur le projet. Une entrée par jou
 - EDA rapide : les deux datasets sont propres (pas de valeurs manquantes, classes strictement équilibrées à 10 classes), voir `reports/datasets_report.json` et échantillons visuels dans `reports/samples/`.
 - **Justification du choix :** budget de calcul du cours limité (~28h au total, ~5h dédiées au rôle Data) et nécessité d'entraîner DDPM + GAN + au moins 3 configurations d'ablation (nombre de pas de diffusion). Fashion-MNIST (niveaux de gris, 28×28, ~30 Mo) permet des temps d'entraînement nettement plus courts que CIFAR-10 (couleur, 32×32, 3 canaux, ~170 Mo), laissant plus de marge pour l'étude d'ablation et les itérations, sans perdre la capacité à observer une différence qualitative significative entre DDPM et GAN.
 - **Prochaine étape :** pipeline de chargement/prétraitement (`src/data/`), normalisation dans [-1, 1], config `configs/data.yaml`.
+
+---
+
+## 2026-08-13 — EDA complète de Fashion-MNIST
+
+- Le notebook `notebooks/01_eda_dataset.ipynb` et l'utilitaire `src/utils/dataset_compare.py` existants étaient un gabarit générique pour comparer des CSV/Parquet, inadapté à des données image — ils ne produisaient pas de rapport exploitable pour Fashion-MNIST/CIFAR-10.
+- Ajout de `scripts/eda_fashion_mnist.py` : EDA complète sur le dataset retenu (Fashion-MNIST), couvrant toute la checklist `TASKS.md` (valeurs manquantes, doublons exacts par hash MD5, valeurs aberrantes, équilibre des classes, statistiques de pixels pour la normalisation, échantillon visuel par classe).
+- Résultat : dataset propre (0 valeur manquante, 0 doublon exact, pixels dans [0, 255], classes parfaitement équilibrées à 6000/1000 par classe). Rapport lisible dans [`reports/eda_fashion_mnist.md`](reports/eda_fashion_mnist.md), grille d'exemples dans `reports/samples/fashion_mnist_grid.png`.
+- Checklist EDA de `TASKS.md` cochée en conséquence.
+- **Prochaine étape :** pipeline `src/data/` (Dataset/DataLoader PyTorch, normalisation [-1, 1], split train/éval, config `configs/data.yaml`).

@@ -13,14 +13,16 @@ Décompose chaque fonctionnalité de [`PLANNING.md`](PLANNING.md) en actions con
 - [x] Documenter la décision et sa justification dans `HISTORY.md`
 
 ### EDA (analyse exploratoire)
-- [ ] Charger train/test, vérifier les tailles et le format (dimensions, canaux, dtype)
-- [ ] Rechercher les valeurs manquantes / fichiers corrompus ou illisibles
-- [ ] Détecter les valeurs aberrantes (images de dimensions incohérentes, pixels hors plage attendue [0, 255])
-- [ ] Détecter les doublons exacts (hash d'image)
-- [ ] Analyser l'équilibre des classes (`value_counts`)
-- [ ] Calculer les statistiques descriptives (moyenne/écart-type des pixels, utile pour la normalisation)
-- [ ] Visualiser un échantillon d'images par classe
-- [ ] Consigner les observations (biais, qualité) — base de la section "Données" du rapport
+- [x] Charger train/test, vérifier les tailles et le format (dimensions, canaux, dtype)
+- [x] Rechercher les valeurs manquantes / fichiers corrompus ou illisibles
+- [x] Détecter les valeurs aberrantes (images de dimensions incohérentes, pixels hors plage attendue [0, 255])
+- [x] Détecter les doublons exacts (hash d'image)
+- [x] Analyser l'équilibre des classes (`value_counts`)
+- [x] Calculer les statistiques descriptives (moyenne/écart-type des pixels, utile pour la normalisation)
+- [x] Visualiser un échantillon d'images par classe
+- [x] Consigner les observations (biais, qualité) — base de la section "Données" du rapport
+
+Résultat : [`reports/eda_fashion_mnist.md`](reports/eda_fashion_mnist.md) (`scripts/eda_fashion_mnist.py`).
 
 ### Pipeline de chargement / prétraitement
 - [ ] Écrire le `Dataset`/`DataLoader` PyTorch (`src/data/`)
