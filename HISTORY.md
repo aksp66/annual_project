@@ -98,3 +98,33 @@ Journal chronologique des actions réalisées sur le projet. Une entrée par jou
 - Résultat : dataset propre (0 valeur manquante, 0 doublon exact, pixels dans [0, 255], classes parfaitement équilibrées à 6000/1000 par classe). Rapport lisible dans [`reports/eda_fashion_mnist.md`](reports/eda_fashion_mnist.md), grille d'exemples dans `reports/samples/fashion_mnist_grid.png`.
 - Checklist EDA de `TASKS.md` cochée en conséquence.
 - **Prochaine étape :** pipeline `src/data/` (Dataset/DataLoader PyTorch, normalisation [-1, 1], split train/éval, config `configs/data.yaml`).
+
+---
+
+## 2026-08-06 — Revue de code (PR #1)
+
+Revue effectuée par AHLI Kossi Sitsofe Pédro, conformément à `CONTRIBUTING.md` (le·la responsable du dossier `data/` ne relit jamais sa propre PR). **Salut Mabelle — voici le détail des points à corriger avant que je (ou Anne) puisse valider le merge sur `master`. Rien de grave, mais plusieurs points sont bloquants car ils rendent des vérifications silencieusement inopérantes plutôt que de planter franchement, ce qui est plus difficile à repérer.**
+
+### Bloquant (à corriger avant merge)
+
+- `scripts/resumable_download.py` : en cas de reprise, le mode d'écriture (`"ab"` vs `"wb"`) est décidé sur la taille du fichier local existant, sans vérifier que le serveur a bien honoré l'en-tête `Range` (code 206). Si le serveur répond `200` avec le contenu complet (repli fréquent sur réseau instable — exactement le cas d'usage visé par ce script), le code **ajoute** ce contenu complet à la suite du fichier partiel déjà présent : fichier `.gz` corrompu, mais accepté comme "téléchargement réussi" faute de vérification de checksum.
+- `scripts/resumable_download.py` télécharge uniquement les `.gz` et ne les décompresse jamais, alors que torchvision attend les fichiers IDX décompressés dans `data/raw/FashionMNIST/raw/`. Si ce script sert de repli (cas documenté plus haut dans cet historique), le chargement du dataset échoue quand même ensuite.
+- Les contrôles EDA "valeurs manquantes" et "valeurs aberrantes" (`scripts/eda_fashion_mnist.py`) sont vides de sens : ils testent la présence de `NaN` sur un tableau `uint8` (structurellement impossible) et vérifient que les pixels sont dans [0, 255] sur un tableau dont le dtype garantit déjà cette plage. Les cases correspondantes de `TASKS.md` sont cochées, mais ces contrôles ne détecteraient jamais une vraie corruption de données (ex. après une coupure réseau pendant le téléchargement — justement le risque documenté ci-dessus).
+- Le notebook `notebooks/01_eda_dataset.ipynb` et `src/utils/dataset_compare.py` ne fonctionnent pas du tout sur ce projet : ils ne gèrent que des fichiers CSV/Parquet, alors que Fashion-MNIST/CIFAR-10 sont des données image (IDX/pickle). L'entrée d'historique ci-dessus l'admet elle-même ("gabarit générique... inadapté à des données image, ne produisait pas de rapport exploitable") mais les fichiers sont quand même ajoutés/conservés tels quels, non fonctionnels — à corriger (les faire fonctionner sur les vraies données) ou à supprimer si `scripts/eda_fashion_mnist.py` les remplace entièrement.
+- Imports cassés faute d'ajout de la racine du repo à `sys.path` : `from src.utils.dataset_compare import compare_datasets` échoue avec `ModuleNotFoundError` aussi bien dans le notebook (cwd Jupyter = `notebooks/`) que dans `scripts/compare_datasets.py` (exécuté depuis la racine du repo).
+- `requests`, utilisé par `resumable_download.py`, n'est pas déclaré dans `requirements.txt`.
+
+### Précision documentaire
+
+- La case `TASKS.md` "temps d'entraînement estimé sur le matériel disponible" est cochée, mais aucune mesure de temps n'existe dans la PR (`reports/datasets_report.json` ne contient que tailles/formats, pas de benchmark) — soit ajouter une mesure réelle, soit reformuler l'entrée `HISTORY.md` pour ne pas présenter l'estimation comme un chiffre mesuré.
+- Petit détail : les dates des entrées `HISTORY.md` ci-dessus (2026-08-13) sont postérieures à la date réelle des commits vus côté horloge du dépôt — probablement l'horloge système de la machine utilisée, à vérifier.
+
+### Qualité / simplification (non bloquant, à considérer si tu as le temps)
+
+- `summarize_dataset()` et `summarize_cifar()` (`scripts/download_and_eda.py`) sont quasi identiques — à fusionner en une seule fonction.
+- `scripts/eda_fashion_mnist.py` reconvertit le tableau train `uint8 → float64` à 3-4 reprises séparément (NaN, moyenne, écart-type) — un seul cast réutilisé suffirait (~376 Mo économisés par cast évité).
+- `resumable_download.py` est un script à part à invoquer manuellement, avec ses propres URLs redéclarées indépendamment de torchvision — source de vérité qui peut diverger ; à envisager : l'intégrer directement dans `download_and_eda.py`.
+- `scripts/download_and_eda.py` avale silencieusement les erreurs de sauvegarde d'échantillons CIFAR (`except Exception: pass`, sans log) — un échantillon manquant passerait inaperçu.
+- `src/utils/dataset_compare.py` (si conservé) : plante sur colonnes dupliquées, comparaison d'extension sensible à la casse (`.parquet` vs `.PARQUET`), hash de ligne calculé avant l'échantillonnage plutôt qu'après (travail inutile sur les lignes jetées).
+
+**Statut : PR non mergée.** Une fois les points bloquants corrigés, la review doit être validée par un·e des deux autres membres de l'équipe (pas moi, cf. règle `CONTRIBUTING.md`) avant merge sur `master`.
