@@ -77,3 +77,11 @@ Journal chronologique des actions réalisées sur le projet. Une entrée par jou
 
 - Création et push de la branche `aaksp`, espace de travail personnel pour AHLI Kossi Sitsofe Pédro (rôle Model), en dehors de la convention `model/`, `data/`... de `CONTRIBUTING.md`.
 - Restriction d'accès en écriture (lui seul) **non appliquée automatiquement** : Git n'a pas de notion d'accès par branche, il faut une règle de protection GitHub (Settings → Branches → Restrict who can push to matching branches) — à configurer manuellement par le propriétaire du repo.
+
+---
+
+## 2026-08-06 — Revue de code : PR #1 de Mabelle (`data/eda-fashion-mnist`)
+
+- KOYE Leleda Ma Belle (`Mabelle95`) a ouvert la PR #1 « Data/eda fashion mnist » (choix du dataset, EDA, scripts de téléchargement). Revue effectuée par AHLI Kossi Sitsofe Pédro (conforme à `CONTRIBUTING.md` : le·la responsable du dossier `data/` ne relit jamais sa propre PR).
+- **Détail des points à corriger consigné dans `HISTORY.md` de la branche `data/eda-fashion-mnist`** (plusieurs points bloquants identifiés : robustesse du téléchargement, contrôles EDA vides de sens sur les données `uint8`, notebook non fonctionnel sur des données image).
+- **Statut : PR non mergée**, en attente de correction par Mabelle puis validation par un·e autre membre de l'équipe avant merge sur `master`.
