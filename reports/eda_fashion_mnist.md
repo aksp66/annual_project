@@ -9,13 +9,13 @@ Dataset retenu le 2026-08-13 (voir `HISTORY.md`). Analyse exploratoire complète
 
 ## Valeurs manquantes / fichiers corrompus
 
-- Pixels NaN train : 0, test : 0
+- Intégrité du fichier déjà vérifiée en amont par le checksum MD5 de torchvision au chargement (le chargement aurait échoué sinon) — voir aussi `scripts/resumable_download.py`, qui revérifie le même MD5 après téléchargement.
 - Labels hors [0, 9] train : 0, test : 0
 
 ## Valeurs aberrantes
 
-- Plage de pixels train : [0, 255] (attendu [0, 255])
-- Plage de pixels test : [0, 255]
+- Plage de pixels train : [0, 255] (attendu [0, 255], garanti par le dtype `uint8` — indicatif, pas un test de corruption)
+- Images dégénérées (entièrement uniformes, ex. tout à 0) train : 0, test : 0
 - Toutes les images ont la même résolution 28×28 (garanti par le format IDX du dataset)
 
 ## Doublons exacts (hash MD5 par image)

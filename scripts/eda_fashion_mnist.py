@@ -53,18 +53,36 @@ def run():
     lines.append(f"- Train : {train_x.shape[0]} images, shape `{train_x.shape[1:]}`, dtype `{train_x.dtype}`")
     lines.append(f"- Test : {test_x.shape[0]} images, shape `{test_x.shape[1:]}`, dtype `{test_x.dtype}`\n")
 
-    # Missing / corrupted
-    n_nan_train = int(np.isnan(train_x.astype(np.float64)).sum())
-    n_nan_test = int(np.isnan(test_x.astype(np.float64)).sum())
+    # Missing / corrupted: dtype uint8 makes NaN and out-of-[0,255] structurally
+    # impossible, so those aren't real checks here — actual corruption (truncated
+    # download, bad bytes) is caught upstream by torchvision's MD5 verification
+    # against the reference checksums during load/extraction (this script only
+    # runs if that already succeeded). What CAN still slip through a checksum
+    # check is a technically-valid but degenerate image (e.g. fully blank) —
+    # checked below instead.
     lines.append("## Valeurs manquantes / fichiers corrompus\n")
-    lines.append(f"- Pixels NaN train : {n_nan_train}, test : {n_nan_test}")
-    lines.append(f"- Labels hors [0, 9] train : {int(((train_y < 0) | (train_y > 9)).sum())}, "
-                 f"test : {int(((test_y < 0) | (test_y > 9)).sum())}\n")
+    lines.append(
+        "- Intégrité du fichier déjà vérifiée en amont par le checksum MD5 de torchvision "
+        "au chargement (le chargement aurait échoué sinon) — voir aussi `scripts/resumable_download.py`, "
+        "qui revérifie le même MD5 après téléchargement.\n"
+        "- Labels hors [0, 9] train : "
+        f"{int(((train_y < 0) | (train_y > 9)).sum())}, test : "
+        f"{int(((test_y < 0) | (test_y > 9)).sum())}\n"
+    )
 
-    # Outliers: pixel range + inconsistent image dims (all same shape by construction)
+    # Outliers: degenerate images (all-zero or all-max) — a checksum-valid file
+    # can still contain a blank/garbage image, unlike a NaN or out-of-range
+    # check on a uint8 array (structurally impossible, so not a real signal).
+    def n_degenerate(x: np.ndarray) -> int:
+        flat = x.reshape(len(x), -1)
+        return int(((flat.min(axis=1) == flat.max(axis=1))).sum())
+
+    deg_train = n_degenerate(train_x)
+    deg_test = n_degenerate(test_x)
     lines.append("## Valeurs aberrantes\n")
-    lines.append(f"- Plage de pixels train : [{int(train_x.min())}, {int(train_x.max())}] (attendu [0, 255])")
-    lines.append(f"- Plage de pixels test : [{int(test_x.min())}, {int(test_x.max())}]")
+    lines.append(f"- Plage de pixels train : [{int(train_x.min())}, {int(train_x.max())}] (attendu [0, 255], "
+                 "garanti par le dtype `uint8` — indicatif, pas un test de corruption)")
+    lines.append(f"- Images dégénérées (entièrement uniformes, ex. tout à 0) train : {deg_train}, test : {deg_test}")
     lines.append("- Toutes les images ont la même résolution 28×28 (garanti par le format IDX du dataset)\n")
 
     # Duplicates (exact hash)
@@ -92,9 +110,10 @@ def run():
         "pas de rééquilibrage nécessaire.\n"
     )
 
-    # Pixel stats (for normalization choice)
-    mean = float(train_x.astype(np.float64).mean())
-    std = float(train_x.astype(np.float64).std())
+    # Pixel stats (for normalization choice) — single cast reused for both stats
+    train_x_f64 = train_x.astype(np.float64)
+    mean = float(train_x_f64.mean())
+    std = float(train_x_f64.std())
     lines.append("## Statistiques de pixels (base de la normalisation)\n")
     lines.append(f"- Moyenne (train) : {mean:.3f}")
     lines.append(f"- Écart-type (train) : {std:.3f}")

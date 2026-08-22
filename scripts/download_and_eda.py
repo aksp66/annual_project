@@ -29,15 +29,9 @@ def run():
 
     results = {}
 
-    # Fashion-MNIST
-    print('Downloading Fashion-MNIST...')
-    fm_train = datasets.FashionMNIST(root=str(root), train=True, download=True)
-    fm_test = datasets.FashionMNIST(root=str(root), train=False, download=True)
-    print('Downloaded Fashion-MNIST')
-
     def summarize_dataset(ds):
         info = {}
-        data = ds.data.numpy() if hasattr(ds, 'data') else None
+        data = np.array(ds.data) if hasattr(ds, 'data') else None
         targets = np.array(ds.targets) if hasattr(ds, 'targets') else None
         if data is not None:
             info['shape'] = list(data.shape)
@@ -47,6 +41,12 @@ def run():
             info['n_classes'] = int(len(uniques))
             info['class_counts'] = {int(u): int(c) for u, c in zip(uniques, counts)}
         return info
+
+    # Fashion-MNIST
+    print('Downloading Fashion-MNIST...')
+    fm_train = datasets.FashionMNIST(root=str(root), train=True, download=True)
+    fm_test = datasets.FashionMNIST(root=str(root), train=False, download=True)
+    print('Downloaded Fashion-MNIST')
 
     results['fashion_mnist'] = {
         'train': summarize_dataset(fm_train),
@@ -69,22 +69,9 @@ def run():
     cif_test = datasets.CIFAR10(root=str(root), train=False, download=True)
     print('Downloaded CIFAR-10')
 
-    def summarize_cifar(ds):
-        info = {}
-        data = np.array(ds.data) if hasattr(ds, 'data') else None
-        targets = np.array(ds.targets) if hasattr(ds, 'targets') else None
-        if data is not None:
-            info['shape'] = list(data.shape)
-            info['dtype'] = str(data.dtype)
-        if targets is not None:
-            uniques, counts = np.unique(targets, return_counts=True)
-            info['n_classes'] = int(len(uniques))
-            info['class_counts'] = {int(u): int(c) for u, c in zip(uniques, counts)}
-        return info
-
     results['cifar10'] = {
-        'train': summarize_cifar(cif_train),
-        'test': summarize_cifar(cif_test),
+        'train': summarize_dataset(cif_train),
+        'test': summarize_dataset(cif_test),
     }
 
     cif_sample_dir = samples_dir / 'cifar10'
@@ -98,8 +85,8 @@ def run():
             try:
                 from PIL import Image
                 Image.fromarray(img).save(cif_sample_dir / f'sample_{i}_class_{target}.png')
-            except Exception:
-                pass
+            except Exception as e:
+                print(f'Warning: could not save CIFAR-10 sample {i} (class {target}):', e)
 
     # Disk usage: estimate sizes of dataset folders
     def folder_size(path: Path):

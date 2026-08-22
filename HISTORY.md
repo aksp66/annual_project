@@ -86,7 +86,7 @@ Journal chronologique des actions réalisées sur le projet. Une entrée par jou
 
 - Téléchargement et vérification (checksum torchvision) de Fashion-MNIST (60 000 train / 10 000 test, 28×28, niveaux de gris) et CIFAR-10 (50 000 train / 10 000 test, 32×32, RGB) via `scripts/download_and_eda.py`. Réseau local instable (coupures de connexion récurrentes) : ajout de `scripts/resumable_download.py`, téléchargeur avec reprise HTTP Range + retries, utilisé en secours pour finaliser le téléchargement des deux datasets.
 - EDA rapide : les deux datasets sont propres (pas de valeurs manquantes, classes strictement équilibrées à 10 classes), voir `reports/datasets_report.json` et échantillons visuels dans `reports/samples/`.
-- **Justification du choix :** budget de calcul du cours limité (~28h au total, ~5h dédiées au rôle Data) et nécessité d'entraîner DDPM + GAN + au moins 3 configurations d'ablation (nombre de pas de diffusion). Fashion-MNIST (niveaux de gris, 28×28, ~30 Mo) permet des temps d'entraînement nettement plus courts que CIFAR-10 (couleur, 32×32, 3 canaux, ~170 Mo), laissant plus de marge pour l'étude d'ablation et les itérations, sans perdre la capacité à observer une différence qualitative significative entre DDPM et GAN.
+- **Justification du choix :** budget de calcul du cours limité (~28h au total, ~5h dédiées au rôle Data) et nécessité d'entraîner DDPM + GAN + au moins 3 configurations d'ablation (nombre de pas de diffusion). Fashion-MNIST (niveaux de gris, 28×28, ~30 Mo) implique environ 3,5× moins de pixels par image que CIFAR-10 (couleur, 32×32, 3 canaux, ~170 Mo) — estimation par volume de données, **pas un temps d'entraînement mesuré** sur le matériel du projet. Ce choix laisse plus de marge pour l'étude d'ablation et les itérations, sans perdre la capacité à observer une différence qualitative significative entre DDPM et GAN. Un vrai chronométrage sera fait à l'entraînement baseline (Phase 2).
 - **Prochaine étape :** pipeline de chargement/prétraitement (`src/data/`), normalisation dans [-1, 1], config `configs/data.yaml`.
 
 ---
@@ -128,3 +128,18 @@ Revue effectuée par AHLI Kossi Sitsofe Pédro, conformément à `CONTRIBUTING.m
 - `src/utils/dataset_compare.py` (si conservé) : plante sur colonnes dupliquées, comparaison d'extension sensible à la casse (`.parquet` vs `.PARQUET`), hash de ligne calculé avant l'échantillonnage plutôt qu'après (travail inutile sur les lignes jetées).
 
 **Statut : PR non mergée.** Une fois les points bloquants corrigés, la review doit être validée par un·e des deux autres membres de l'équipe (pas moi, cf. règle `CONTRIBUTING.md`) avant merge sur `master`.
+
+---
+
+## 2026-08-22 — Corrections suite à la revue de code (PR #1)
+
+Réponse point par point aux points bloquants de la review du 2026-08-06/08-18 :
+
+- `scripts/resumable_download.py` : corrigé le bug de reprise — le mode d'écriture (`ab`/`wb`) dépend désormais du status code réellement renvoyé par le serveur (`206` = reprise honorée, sinon on repart de 0), plus de la seule taille locale. Le script décompresse maintenant lui-même les `.gz`/`.tar.gz` et vérifie le MD5 (mêmes valeurs que `torchvision`) avant extraction — utilisable seul, sans dépendre d'un appel torchvision derrière.
+- `scripts/eda_fashion_mnist.py` : suppression des contrôles vides de sens (`NaN`/plage sur `uint8`, structurellement impossibles) ; remplacés par une vérification honnête (intégrité déjà garantie en amont par le checksum MD5 de torchvision au chargement) et un vrai contrôle d'images dégénérées (entièrement uniformes) qui, lui, peut réellement détecter une anomalie malgré un fichier au checksum valide. Un seul cast `uint8 → float64` réutilisé au lieu de plusieurs.
+- `notebooks/01_eda_dataset.ipynb`, `src/utils/dataset_compare.py`, `scripts/compare_datasets.py` supprimés : gabarit générique CSV/Parquet non fonctionnel sur des données image, entièrement remplacé par `scripts/eda_fashion_mnist.py`. Remplacés par `notebooks/01_eda_fashion_mnist.ipynb`, qui appelle réellement ce script (import corrigé, plus d'erreur `ModuleNotFoundError`) — exécuté de bout en bout pour vérifier.
+- `requests` ajouté à `requirements.txt`.
+- `HISTORY.md` : justification du choix du dataset reformulée pour ne pas présenter l'estimation par volume de pixels comme un temps d'entraînement mesuré.
+- `scripts/download_and_eda.py` : fusion de `summarize_dataset`/`summarize_cifar` (quasi identiques) en une seule fonction ; l'erreur silencieuse (`except: pass`) sur la sauvegarde d'échantillons CIFAR loggue maintenant un avertissement au lieu de disparaître.
+- Dates `HISTORY.md` du 2026-08-13 vérifiées face à l'horodatage Git réel des commits (`git log --date=iso`) : elles correspondent exactement à l'horloge du dépôt à ce moment-là, donc laissées telles quelles.
+- Non traité pour l'instant : vérification formelle de la licence Fashion-MNIST/CIFAR-10 (case `TASKS.md` correspondante laissée décochée).
