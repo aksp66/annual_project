@@ -389,3 +389,14 @@ Travail réalisé sur la branche `aaksp` (non mergé sur `master`). Comparaison 
 - **Détails mineurs corrigés :** `notebooks/README.md` (exemple `02_diffusion_prototype.ipynb` → `02_diffusion_forward.ipynb`, ajout d'un exemple d'ablation) ; `tests/README.md` (ne listait que 3 des 7 fichiers de test existants — complété avec les 7).
 - **Vérifiés corrects, non modifiés :** `app/README.md`, `reports/README.md`.
 - **Prochaine étape :** relecture visuelle du rapport dans Word, intégration des contributions des autres membres, présentation.
+
+---
+
+## 2026-08-27 — Matière de préparation à la présentation
+
+Travail réalisé sur la branche `aaksp` (non mergé sur `master`), checklist "Présentation" de `TASKS.md` (préparation, pas encore les slides finales ni la répétition chronométrée).
+
+- Ajout de `presentation/` : `concepts_a_comprendre.md` (révision des concepts clés — diffusion forward/inverse, rôle du U-Net et de l'embedding temporel, principe adversarial du GAN, résultat contre-intuitif de l'étude d'ablation, lecture du FID, limites à assumer, questions probables anticipées) et `guide_app_api.md` (guide de la démo live : schéma du flux app↔API, justification du choix d'une API séparée de l'app, rôle de chaque endpoint, déroulé conseillé de la démo, points de vigilance).
+- **API et app relancées en local pour vérification** (`uvicorn app.api.main:app --port 8000`, `streamlit run app/web/app.py --server.port 8501`, `API_URL` pointée vers l'API locale) : `/health` confirme les deux modèles chargés depuis les checkpoints existants, une génération GAN via l'API confirme le flux de bout en bout. Docker non utilisé cette fois (Docker Desktop non démarré sur la machine) — l'exécution directe reste équivalente et déjà documentée comme fonctionnelle.
+- Note technique : premier lancement de Streamlit sur cette machine bloqué par l'invite d'onboarding interactive (email) ; contournée en pré-remplissant `~/.streamlit/credentials.toml` (`email = ""`).
+- **Prochaine étape :** construire les slides à partir de `presentation/concepts_a_comprendre.md`, répéter la démo live avec `presentation/guide_app_api.md`, chronométrer (20 min).
