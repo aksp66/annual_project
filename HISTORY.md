@@ -4,6 +4,21 @@ Journal chronologique des actions réalisées sur le projet. Une entrée par jou
 
 ---
 
+## 2026-08-29 — Préparation de la soutenance et finalisation reporting
+
+Travail réalisé par KONTEVI Akossiwa Anne (`anne952`), rôle Reporting / Backend Developer.
+
+- Ajout du dossier `presentation/` avec une trame de soutenance en Markdown (`presentation/soutenance.md`) structurée pour une présentation de 20 minutes.
+- Préparation du déroulé de présentation : contexte, dataset, méthode DDPM, méthode GAN/DCGAN, étude d'ablation, résultats chiffrés, démonstration, limites et répartition du travail.
+- Ajout d'un scénario de démonstration live : lancement `docker compose up --build`, vérification `/health`, génération GAN, génération DDPM, comparaison côte à côte dans Streamlit.
+- Ajout d'un plan de secours pour la soutenance en cas de problème de chargement des checkpoints ou de lenteur DDPM : utilisation des figures déjà générées dans `reports/figures/`.
+- Mise à jour du `Readme.md` pour référencer le support de présentation.
+- Mise à jour de `TASKS.md` : slides et préparation de la démo live marquées comme réalisées ; répétition chronométrée toujours à faire.
+
+**Reste à faire avant rendu/soutenance :** exporter le rapport final en PDF, relire la présentation en équipe, puis faire une répétition chronométrée de 20 minutes.
+
+---
+
 ## 2026-08-04 — Initialisation du repository
 
 **Sujet retenu :** Projet 3 — *Modèle de diffusion (DDPM) entraîné from scratch vs. GAN* (cours Projets AI & Big Data, TCHAYE-KONDI Jude, Ph.D.).

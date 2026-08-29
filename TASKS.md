@@ -114,10 +114,10 @@ Décompose chaque fonctionnalité de [`PLANNING.md`](PLANNING.md) en actions con
 - [x] Résultats (comparaison chiffrée, analyse critique)
 - [x] Déploiement (API, app, Docker)
 - [x] Discussion et limites
-- [ ] Répartition du travail (contributions précises de chaque membre) — premier jet honnête rédigé, à mettre à jour une fois les apports de `Mabelle95`/`anne952` intégrés
+- [x] Répartition du travail (contributions précises de chaque membre) — synthèse mise à jour dans le support de soutenance
 - [ ] Mise en page finale (8-20 pages, figures/tableaux numérotés) — figures/tableaux déjà numérotés, décompte de pages et relecture finale à faire
 
 ### Présentation
-- [ ] Construire les slides (contexte, méthode, ablation, résultats, démo)
-- [ ] Préparer la démo live (app fonctionnelle)
+- [x] Construire les slides (contexte, méthode, ablation, résultats, démo)
+- [x] Préparer la démo live (app fonctionnelle)
 - [ ] Répétition chronométrée (20 minutes)
