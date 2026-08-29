@@ -33,6 +33,7 @@ Détails complets du sujet : [`project/projets_master.md`](project/projets_maste
 ├── experiments/         # sorties d'entraînement (non versionnées) : checkpoints, logs, échantillons
 ├── app/                 # démo : api/ (FastAPI) + web/ (Streamlit)
 ├── docker/              # conteneurisation
+├── presentation/         # trame de soutenance et scénario de démo
 ├── reports/             # rapport final (style article scientifique)
 ├── scripts/             # scripts de reproduction des résultats
 ├── tests/               # tests unitaires
@@ -83,6 +84,6 @@ L'avancement (décisions, actions, résultats) est journalisé dans [`HISTORY.md
 - Rapport PDF (8-20 pages, style article scientifique) — envoyé à <tchaye59@gmail.com> avant la dernière séance.
 - Code reproductible (ce repo), README d'installation/exécution.
 - Application de démonstration (web).
-- Présentation (20 min).
+- Présentation (20 min) : trame disponible dans [`presentation/soutenance.md`](presentation/soutenance.md).
 
 Voir [`project/projets_master.md`](project/projets_master.md) pour les modalités complètes.
