@@ -22,6 +22,8 @@ Décompose chaque fonctionnalité de [`PLANNING.md`](PLANNING.md) en actions con
 - [x] Visualiser un échantillon d'images par classe
 - [x] Consigner les observations (biais, qualité) — base de la section "Données" du rapport
 
+Résultat : [`reports/eda_fashion_mnist.md`](reports/eda_fashion_mnist.md) (`scripts/eda_fashion_mnist.py`).
+
 ### Pipeline de chargement / prétraitement
 - [x] Écrire le `Dataset`/`DataLoader` PyTorch (`src/data/`)
 - [x] Normalisation adaptée à la diffusion (ex. pixels dans [-1, 1])

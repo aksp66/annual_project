@@ -400,6 +400,72 @@ Travail réalisé sur la branche `aaksp` (non mergé sur `master`). Comparaison 
 
 ---
 
+## 2026-08-13 — Choix du dataset : Fashion-MNIST
+
+**Décision (Data / Experiment Engineer) :** Fashion-MNIST retenu comme dataset principal pour le DDPM et le GAN.
+
+- Téléchargement et vérification (checksum torchvision) de Fashion-MNIST (60 000 train / 10 000 test, 28×28, niveaux de gris) et CIFAR-10 (50 000 train / 10 000 test, 32×32, RGB) via `scripts/download_and_eda.py`. Réseau local instable (coupures de connexion récurrentes) : ajout de `scripts/resumable_download.py`, téléchargeur avec reprise HTTP Range + retries, utilisé en secours pour finaliser le téléchargement des deux datasets.
+- EDA rapide : les deux datasets sont propres (pas de valeurs manquantes, classes strictement équilibrées à 10 classes), voir `reports/datasets_report.json` et échantillons visuels dans `reports/samples/`.
+- **Justification du choix :** budget de calcul du cours limité (~28h au total, ~5h dédiées au rôle Data) et nécessité d'entraîner DDPM + GAN + au moins 3 configurations d'ablation (nombre de pas de diffusion). Fashion-MNIST (niveaux de gris, 28×28, ~30 Mo) implique environ 3,5× moins de pixels par image que CIFAR-10 (couleur, 32×32, 3 canaux, ~170 Mo) — estimation par volume de données, **pas un temps d'entraînement mesuré** sur le matériel du projet. Ce choix laisse plus de marge pour l'étude d'ablation et les itérations, sans perdre la capacité à observer une différence qualitative significative entre DDPM et GAN. Un vrai chronométrage sera fait à l'entraînement baseline (Phase 2).
+- **Prochaine étape :** pipeline de chargement/prétraitement (`src/data/`), normalisation dans [-1, 1], config `configs/data.yaml`.
+
+---
+
+## 2026-08-13 — EDA complète de Fashion-MNIST
+
+- Le notebook `notebooks/01_eda_dataset.ipynb` et l'utilitaire `src/utils/dataset_compare.py` existants étaient un gabarit générique pour comparer des CSV/Parquet, inadapté à des données image — ils ne produisaient pas de rapport exploitable pour Fashion-MNIST/CIFAR-10.
+- Ajout de `scripts/eda_fashion_mnist.py` : EDA complète sur le dataset retenu (Fashion-MNIST), couvrant toute la checklist `TASKS.md` (valeurs manquantes, doublons exacts par hash MD5, valeurs aberrantes, équilibre des classes, statistiques de pixels pour la normalisation, échantillon visuel par classe).
+- Résultat : dataset propre (0 valeur manquante, 0 doublon exact, pixels dans [0, 255], classes parfaitement équilibrées à 6000/1000 par classe). Rapport lisible dans [`reports/eda_fashion_mnist.md`](reports/eda_fashion_mnist.md), grille d'exemples dans `reports/samples/fashion_mnist_grid.png`.
+- Checklist EDA de `TASKS.md` cochée en conséquence.
+- **Prochaine étape :** pipeline `src/data/` (Dataset/DataLoader PyTorch, normalisation [-1, 1], split train/éval, config `configs/data.yaml`).
+
+---
+
+## 2026-08-06 — Revue de code (PR #1)
+
+Revue effectuée par AHLI Kossi Sitsofe Pédro, conformément à `CONTRIBUTING.md` (le·la responsable du dossier `data/` ne relit jamais sa propre PR). **Salut Mabelle — voici le détail des points à corriger avant que je (ou Anne) puisse valider le merge sur `master`. Rien de grave, mais plusieurs points sont bloquants car ils rendent des vérifications silencieusement inopérantes plutôt que de planter franchement, ce qui est plus difficile à repérer.**
+
+### Bloquant (à corriger avant merge)
+
+- `scripts/resumable_download.py` : en cas de reprise, le mode d'écriture (`"ab"` vs `"wb"`) est décidé sur la taille du fichier local existant, sans vérifier que le serveur a bien honoré l'en-tête `Range` (code 206). Si le serveur répond `200` avec le contenu complet (repli fréquent sur réseau instable — exactement le cas d'usage visé par ce script), le code **ajoute** ce contenu complet à la suite du fichier partiel déjà présent : fichier `.gz` corrompu, mais accepté comme "téléchargement réussi" faute de vérification de checksum.
+- `scripts/resumable_download.py` télécharge uniquement les `.gz` et ne les décompresse jamais, alors que torchvision attend les fichiers IDX décompressés dans `data/raw/FashionMNIST/raw/`. Si ce script sert de repli (cas documenté plus haut dans cet historique), le chargement du dataset échoue quand même ensuite.
+- Les contrôles EDA "valeurs manquantes" et "valeurs aberrantes" (`scripts/eda_fashion_mnist.py`) sont vides de sens : ils testent la présence de `NaN` sur un tableau `uint8` (structurellement impossible) et vérifient que les pixels sont dans [0, 255] sur un tableau dont le dtype garantit déjà cette plage. Les cases correspondantes de `TASKS.md` sont cochées, mais ces contrôles ne détecteraient jamais une vraie corruption de données (ex. après une coupure réseau pendant le téléchargement — justement le risque documenté ci-dessus).
+- Le notebook `notebooks/01_eda_dataset.ipynb` et `src/utils/dataset_compare.py` ne fonctionnent pas du tout sur ce projet : ils ne gèrent que des fichiers CSV/Parquet, alors que Fashion-MNIST/CIFAR-10 sont des données image (IDX/pickle). L'entrée d'historique ci-dessus l'admet elle-même ("gabarit générique... inadapté à des données image, ne produisait pas de rapport exploitable") mais les fichiers sont quand même ajoutés/conservés tels quels, non fonctionnels — à corriger (les faire fonctionner sur les vraies données) ou à supprimer si `scripts/eda_fashion_mnist.py` les remplace entièrement.
+- Imports cassés faute d'ajout de la racine du repo à `sys.path` : `from src.utils.dataset_compare import compare_datasets` échoue avec `ModuleNotFoundError` aussi bien dans le notebook (cwd Jupyter = `notebooks/`) que dans `scripts/compare_datasets.py` (exécuté depuis la racine du repo).
+- `requests`, utilisé par `resumable_download.py`, n'est pas déclaré dans `requirements.txt`.
+
+### Précision documentaire
+
+- La case `TASKS.md` "temps d'entraînement estimé sur le matériel disponible" est cochée, mais aucune mesure de temps n'existe dans la PR (`reports/datasets_report.json` ne contient que tailles/formats, pas de benchmark) — soit ajouter une mesure réelle, soit reformuler l'entrée `HISTORY.md` pour ne pas présenter l'estimation comme un chiffre mesuré.
+- Petit détail : les dates des entrées `HISTORY.md` ci-dessus (2026-08-13) sont postérieures à la date réelle des commits vus côté horloge du dépôt — probablement l'horloge système de la machine utilisée, à vérifier.
+
+### Qualité / simplification (non bloquant, à considérer si tu as le temps)
+
+- `summarize_dataset()` et `summarize_cifar()` (`scripts/download_and_eda.py`) sont quasi identiques — à fusionner en une seule fonction.
+- `scripts/eda_fashion_mnist.py` reconvertit le tableau train `uint8 → float64` à 3-4 reprises séparément (NaN, moyenne, écart-type) — un seul cast réutilisé suffirait (~376 Mo économisés par cast évité).
+- `resumable_download.py` est un script à part à invoquer manuellement, avec ses propres URLs redéclarées indépendamment de torchvision — source de vérité qui peut diverger ; à envisager : l'intégrer directement dans `download_and_eda.py`.
+- `scripts/download_and_eda.py` avale silencieusement les erreurs de sauvegarde d'échantillons CIFAR (`except Exception: pass`, sans log) — un échantillon manquant passerait inaperçu.
+- `src/utils/dataset_compare.py` (si conservé) : plante sur colonnes dupliquées, comparaison d'extension sensible à la casse (`.parquet` vs `.PARQUET`), hash de ligne calculé avant l'échantillonnage plutôt qu'après (travail inutile sur les lignes jetées).
+
+**Statut : PR non mergée.** Une fois les points bloquants corrigés, la review doit être validée par un·e des deux autres membres de l'équipe (pas moi, cf. règle `CONTRIBUTING.md`) avant merge sur `master`.
+
+---
+
+## 2026-08-22 — Corrections suite à la revue de code (PR #1)
+
+Réponse point par point aux points bloquants de la review du 2026-08-06/08-18 :
+
+- `scripts/resumable_download.py` : corrigé le bug de reprise — le mode d'écriture (`ab`/`wb`) dépend désormais du status code réellement renvoyé par le serveur (`206` = reprise honorée, sinon on repart de 0), plus de la seule taille locale. Le script décompresse maintenant lui-même les `.gz`/`.tar.gz` et vérifie le MD5 (mêmes valeurs que `torchvision`) avant extraction — utilisable seul, sans dépendre d'un appel torchvision derrière.
+- `scripts/eda_fashion_mnist.py` : suppression des contrôles vides de sens (`NaN`/plage sur `uint8`, structurellement impossibles) ; remplacés par une vérification honnête (intégrité déjà garantie en amont par le checksum MD5 de torchvision au chargement) et un vrai contrôle d'images dégénérées (entièrement uniformes) qui, lui, peut réellement détecter une anomalie malgré un fichier au checksum valide. Un seul cast `uint8 → float64` réutilisé au lieu de plusieurs.
+- `notebooks/01_eda_dataset.ipynb`, `src/utils/dataset_compare.py`, `scripts/compare_datasets.py` supprimés : gabarit générique CSV/Parquet non fonctionnel sur des données image, entièrement remplacé par `scripts/eda_fashion_mnist.py`. Remplacés par `notebooks/01_eda_fashion_mnist.ipynb`, qui appelle réellement ce script (import corrigé, plus d'erreur `ModuleNotFoundError`) — exécuté de bout en bout pour vérifier.
+- `requests` ajouté à `requirements.txt`.
+- `HISTORY.md` : justification du choix du dataset reformulée pour ne pas présenter l'estimation par volume de pixels comme un temps d'entraînement mesuré.
+- `scripts/download_and_eda.py` : fusion de `summarize_dataset`/`summarize_cifar` (quasi identiques) en une seule fonction ; l'erreur silencieuse (`except: pass`) sur la sauvegarde d'échantillons CIFAR loggue maintenant un avertissement au lieu de disparaître.
+- Dates `HISTORY.md` du 2026-08-13 vérifiées face à l'horodatage Git réel des commits (`git log --date=iso`) : elles correspondent exactement à l'horloge du dépôt à ce moment-là, donc laissées telles quelles.
+- Non traité pour l'instant : vérification formelle de la licence Fashion-MNIST/CIFAR-10 (case `TASKS.md` correspondante laissée décochée).
+
+---
+
 ## 2026-08-27 — Matière de préparation à la présentation
 
 Travail réalisé sur la branche `aaksp` (non mergé sur `master`), checklist "Présentation" de `TASKS.md` (préparation, pas encore les slides finales ni la répétition chronométrée).

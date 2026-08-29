@@ -8,6 +8,7 @@ torch-fidelity   # requis par torchmetrics.image.fid.FrechetInceptionDistance
 numpy
 pandas
 scikit-learn
+requests
 
 # Config / suivi d'expériences
 pyyaml
