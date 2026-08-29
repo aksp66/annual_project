@@ -1,0 +1,20 @@
+# Config du pipeline de données — Fashion-MNIST (cf. HISTORY.md, décision du 2026-08-04)
+
+dataset: fashion_mnist
+data_dir: data/raw
+
+# Fashion-MNIST est nativement 28x28 ; pad à 32x32 pour que le U-Net DDPM
+# puisse downsampler par divisions successives par 2 sans arrondi (32 -> 16 -> 8 -> 4).
+image_size: 32
+pad_value: 0
+
+# Normalisation vers [-1, 1], standard pour la diffusion (cf. EDA notebooks/01_eda_dataset.ipynb).
+normalize_mean: 0.5
+normalize_std: 0.5
+
+# Split éval prélevé sur le train set (le test set officiel reste réservé à l'évaluation finale).
+val_split: 0.1
+seed: 42
+
+batch_size: 128
+num_workers: 0

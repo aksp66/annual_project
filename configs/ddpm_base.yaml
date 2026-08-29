@@ -1,0 +1,29 @@
+# Config baseline du processus de diffusion DDPM (cf. PLANNING.md Phase 2).
+# Servira aussi de base à l'étude d'ablation sur le nombre de pas
+# (configs/ddpm_steps100.yaml, ddpm_steps400.yaml, ddpm_steps1000.yaml...).
+
+timesteps: 1000
+schedule: linear   # 'linear' (Ho et al. 2020) ou 'cosine' (Nichol & Dhariwal 2021)
+beta_start: 0.0001
+beta_end: 0.02
+seed: 42
+
+# U-Net de débruitage (src/models/ddpm/unet.py) — petit modèle, pas d'attention,
+# pour rester entraînable sur CPU (cf. HISTORY.md, pas de GPU disponible).
+model:
+  in_channels: 1
+  base_channels: 32
+  channel_mults: [1, 2, 4]   # résolutions 32 -> 16 -> 8
+  num_res_blocks: 2
+
+# Entraînement baseline (src/training/train_ddpm.py).
+# num_steps calé sur le budget de calcul CPU dispo (~6.8s/step mesuré,
+# cf. HISTORY.md) pour rester proche du budget de 2h de PLANNING.md.
+training:
+  num_steps: 1000
+  lr: 0.0002
+  log_every: 10
+  sample_every: 250
+  checkpoint_every: 250
+  n_samples: 8
+  output_dir: experiments/ddpm_baseline

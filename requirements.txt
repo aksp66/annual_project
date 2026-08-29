@@ -2,6 +2,7 @@
 torch
 torchvision
 torchmetrics
+torch-fidelity   # requis par torchmetrics.image.fid.FrechetInceptionDistance
 
 # Data / calcul scientifique
 numpy
@@ -19,6 +20,14 @@ matplotlib
 fastapi
 uvicorn
 streamlit
+requests
 
 # Notebooks
 jupyter
+
+# Rapport
+python-docx
+
+# Tests
+pytest
+httpx   # requis par fastapi.testclient.TestClient

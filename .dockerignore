@@ -1,0 +1,12 @@
+.venv/
+.git/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+data/
+experiments/
+notebooks/
+reports/
+project/
+.claude/
